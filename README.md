@@ -4,9 +4,9 @@
 
 In this project predictions are made whether customer is going to cancel a hotel/resort booking using libraries, such as numpy, pandas, scikit-learn and seaborn.
 
-## Web Scrapping Cricket Data (05/2022 - 06/2022)
+## Cricket Data Performance Dashboard (05/2022 - 06/2022)
 
-In this project data is web scraped from ESPN Cricinfo website using libraries such as BeautifulSoup, pandas, numpy, requests and openpyxl, and data is stored in Excel files.
+In this project cricket data is web scraped from ESPN Cricinfo website, and stored in Excel files, and a dashboard is made using PowerBi.
 
 
 ## Predicting House Price Using Advanced Ensemble Techniques (10/2020 - 12/2021)
