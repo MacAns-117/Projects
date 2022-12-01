@@ -1,5 +1,15 @@
 # Projects
 
+## PwC (11/2022 - 12/2022)
+
+Completed the following tasks under the PwC Virtual Case Experience:
+1. Call Centre Trends:
+    -Visualising customer and agent behaviour.
+2. Customer Retention
+    -Customer demographics and insights.
+3. Diversity & Inclusion
+    -Gender balance in the executive suite.
+
 ## Hotel Churn Rate (06/2022 - 07/2022)
 
 In this project predictions are made whether customer is going to cancel a hotel/resort booking using libraries, such as numpy, pandas, scikit-learn and seaborn.
