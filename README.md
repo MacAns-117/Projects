@@ -2,7 +2,7 @@
 
 ## PwC (11/2022 - 12/2022)
 
-Completed the following tasks under the PwC Virtual Case Experience:
+Completed the following tasks under the PwC Power Bi Virtual Case Experience:
 1. Call Centre Trends:
     -Visualising customer and agent behaviour.
 2. Customer Retention
