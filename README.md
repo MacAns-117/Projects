@@ -1,6 +1,18 @@
 # Projects
 
-## PwC (11/2022 - 12/2022)
+## Accenture Data Analytics and Visualization (11/2022 - 12/2022)
+
+Completed the following tasks under the Accenture Data Analytics and Visualization Virtual Experience:
+1. Project Understanding
+   -Quickly get up to speed with the business problem being addressed, project requirements and team alignment.
+2. Data Cleaning & Modeling
+   -Modeling data to create valuable insights.
+3. Data Visualization & Storytelling
+   -Bring your data to life and uncover insights for the business.
+4. Present to the Client
+   -Presented insights back to the client.
+    
+## PwC Power Bi (11/2022 - 12/2022)
 
 Completed the following tasks under the PwC Power Bi Virtual Case Experience:
 1. Call Centre Trends:
