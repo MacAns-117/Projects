@@ -1,6 +1,6 @@
 # Projects
 
-## Accenture Data Analytics and Visualization (11/2022 - 12/2022)
+## Accenture Data Analytics and Visualization (12/2022 - 12/2022)
 
 Completed the following tasks under the Accenture Data Analytics and Visualization Virtual Experience:
 1. Project Understanding
