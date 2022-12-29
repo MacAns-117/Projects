@@ -19,7 +19,7 @@ Skills used: Data Analysis, Machine Learning.
 
 In this project cricket data is web scraped from ESPN Cricinfo website, and stored in Excel files, and a dashboard is made using PowerBi.
 Libaries used: BeautifulSoup, Requests.
-Skills used: WebScraping.
+Skills used: WebScraping, Data Visualization.
 
 
 ## Predicting House Price Using Advanced Ensemble Techniques (10/2020 - 12/2021)
