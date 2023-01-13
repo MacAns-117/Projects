@@ -5,10 +5,10 @@ In this Virtual Experience I am working as a Data Analyst at Accenture, within a
 My team has been assigned a new project for a client called Social Buzz.
 
 <br>Skills requied to complete project:
--Requirements gathering
--Data cleaning
--Data modelling
--Data Visualization
+- Requirements gathering
+- Data cleaning
+- Data modelling
+- Data Visualization
 
 <br>Tools used: Power Bi, MS Excel. 
 <br>Skills used: Data Cleaning, Data Modelling Data Analysis, Data Visualization.
