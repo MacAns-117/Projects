@@ -1,6 +1,7 @@
 # Predicting House Price Using Advanced Ensemble Techniques (10/2020 - 12/2021)
 
-This project is about predicting house price in cities of India. This project was completed as part of final year of Master of Technology in Computer Science and Engineering degree. The data was gateherd from kaggle website. Following are the features of the dataset:
+This project is about predicting house price in cities of India. This project was completed as part of final year of Master of Technology in Computer Science and Engineering degree. The data was gateherd from kaggle website. In this dataset, there are 29451 observations with 12 explanatory variables describing aspects of residential homes.
+Following are the features of the dataset:
 
 <br>Categorical Features include:
 - Posted_by
