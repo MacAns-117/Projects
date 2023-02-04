@@ -10,5 +10,12 @@ My team has been assigned a new project for a client called Social Buzz.
 - Data modelling
 - Data Visualization
 
-<br>Tools used: Power Bi, MS Excel. 
-<br>Skills used: Data Cleaning, Data Modelling Data Analysis, Data Visualization.
+<br>Tools used: 
+- MS Power Bi 
+- MS Excel. 
+
+<br>Skills used: 
+- Data Cleaning 
+- Data Modelling 
+- Data Analysis 
+- Data Visualization.
