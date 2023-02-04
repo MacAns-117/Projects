@@ -1,6 +1,23 @@
 # Predicting House Price Using Advanced Ensemble Techniques (10/2020 - 12/2021)
 
-This project is  price prediction is done for houses in India.
+This project is about predicting house price in cities of India. This project was completed as part of final year of Master of Technology in Computer Science and Engineering degree. The data was gateherd from kaggle website. Following are the features of the dataset:
+
+<br>Categorical Features include:
+- Posted_by
+- Under_construction
+- Rera
+- Bhk_no
+- Bhk_or_rk
+- Resale
+- Address
+- Ready_to_move
+
+<br> Numerical Features include:
+- Square_ft
+- Latitude
+- Longitude
+- Target(Price_in_lacs)
+
 
 <br>Libraries used: 
 - Pandas
