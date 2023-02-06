@@ -15,7 +15,7 @@ Libraries used: Numpy, Pandas, Scikit-learn, Seaborn, Missingno.
 Skills used: Data Analysis, Machine Learning.
 
 
-## Cricket Data Performance Dashboard (05/2022 - 06/2022)
+## Cricket Data Performance Dashboard (05/2022 - 05/2022)
 
 In this project cricket data is web scraped from ESPN Cricinfo website, and stored in Excel files, and a dashboard is made using PowerBi.
 Libaries used: BeautifulSoup, Requests.
