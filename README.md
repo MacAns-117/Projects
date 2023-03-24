@@ -1,6 +1,12 @@
 # Main Projects
 
 
+## Playstore Apps Analysis & Visualization (01/2023 - 01/2023)
+
+In this project data is collected from Playstore then it is cleaned, processed using Python and SQL and then used to generate interesting insights.
+Tools used: Python, SQL, Power Bi, MS Excel.
+Skills used: Data Cleaning, Data Analysis, Data Visualization.
+
 ## Accenture Data Analytics and Visualization (12/2022 - 12/2022)
 
 In this project data is collected from various relevant data sources then it is cleaned, processed and used to generate interesting insights.
