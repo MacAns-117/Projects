@@ -1,5 +1,13 @@
 # Main Projects
 
+## Insatgram User Analytics (07/2023 - 07/2023)
+
+Used SQL queries and MySQL Workbench to analyse Instagram's data for marketing and investor metrics purposes.
+Examined the database to answer questions about user loyalty, engagement, contests, hashtags, ads, and fraud detection.
+Interpreted the query results to get useful insights and recommendations.
+
+Tools used: SQL Workbench.
+Skills used: Data Analysis, SQL 
 
 ## Playstore Apps Analysis & Visualization (01/2023 - 01/2023)
 
