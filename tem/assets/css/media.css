@@ -1,0 +1,29 @@
+
+@media (max-width: 768px) {
+    body {
+        padding-left: 0; /* Remove padding for small screens */
+    }
+
+    .sidenav {
+        width: 80px; /* Adjust sidebar width for small screens */
+    }
+
+    .navbar {
+        width: calc(100% - 80px); /* Adjust navbar width to take remaining space */
+        margin-left: 80px; /* Align navbar with the sidebar */
+    }
+
+    .sidebar-heading {
+        width: 80px; /* Adjust heading width to match the sidebar */
+        font-size: smaller; /* Adjust font size if necessary */
+        text-align: center; /* Center-align the text */
+    }
+
+    /* Ensure icons and text within buttons are properly aligned */
+    .sidenav .btn i {
+        margin-right: 0; /* Remove any margin if present */
+    }
+    .sidenav .btn span {
+        display: none; /* Hide text next to icons */
+    }
+}
