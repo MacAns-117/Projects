@@ -1,0 +1,46 @@
+from django.shortcuts import render, redirect
+from django.views import View
+# Assuming you have forms for authentication
+from .forms import LoginForm, SignupForm
+from django.contrib.auth import authenticate, login, logout
+
+class LoginView(View):
+    form_class = LoginForm
+    template_name = 'login.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                # Redirect to a success page.
+                return redirect('home')
+            else:
+                # Return an 'invalid login' error message.
+                return render(request, self.template_name, {'form': form, 'error': 'Invalid username or password'})
+        else:
+            return render(request, self.template_name, {'form': form})
+
+class SignupView(View):
+    form_class = SignupForm
+    template_name = 'signup.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            # Redirect to login page after successful signup
+            return redirect('login')
+        else:
+            return render(request, self.template_name, {'form': form})

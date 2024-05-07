@@ -1,0 +1,323 @@
+django:
+when we working with django,we need to follow the following steps:
+step-1:
+we nedd to check weather python is there or not there:
+open cmd prompt,type the following command:
+python --version
+or 
+py --version
+step-2:
+we need to check weather django is there or not,using following command in the cmd:
+django-admin --version
+note:
+if django is not installed,we need to use the following command:
+pip install django
+django is used to integrate both front-end and back-end
+front-end refers html,css,jabascript,bootstrap and juquery
+back-end refers to python and mysql
+in django we will integrate both front-end and back-end with help of 
+project
+how to create the project in the django:
+to create the project in the django,we will use the following command:
+django-admin startproject project_name;
+in the django project we will create "n" number apps,which are represents a particular function in the application/project:
+to create the app in the django we will use the following syntax:
+python manage.py  startapp app_name;
+creating the first project in the django:
+step-1:
+create a folder with name "django_1230"
+step-2:
+load the folder path in the cmd
+step-3:
+create the project with name project1,using following command
+django-admin startproject project1
+step-4:
+once open the project folder we will have the following:
+project1 folder
+manage.py file
+when we open the project1 folder,we have the following files:
+asgi.py,__init__.py,wsgi.py,settings.py,urls.py
+how to create the app in the django:
+to create the app in the django we will use the following command:
+before excuting the command,we need to enter into project folder
+first,before create the app
+step-1:
+cd project_name
+step-2:
+python manage.py startapp app1
+step:
+once we create the app,we are going to have the following files in the app folder:
+migrations folder,__init__,tests.py,views.py,models.py,...
+
+how run the django project :
+to run the django project,we will use the following command
+python manage.py runserver
+how to quite the server or how to stop the server in the django:
+to stop the server in the django we will use the following syntax:
+ctrl+c
+ how to launch the django project in the vs code:
+code .
+
+how to run the django project with server with different port number:
+to run the django project with server with different port number,in django we will use the following format:
+python manage.py runserver port_number
+the port number must be ranges from 0 to 65535
+if we give more than 65535 or less than zero it will give an error
+sometime when we give some port number,it will show some error,it means that the portnumber what you given is already is used by some other application,you can use another port number
+----------------------------------------------------------------------------------
+working with front-end and django:
+in django,we will use a patteren for creating any project:
+django will follow the patteren called "MVT"
+M stands for model
+V stands for View 
+T stands for template
+to create any project,we will use this patteren(MVT):
+here MVT,
+M is represents "Model(DATABASE)" in the django project
+V is Represents "Server(python)" in the django project
+T is represents "template(Html,css,javascript and jquery) in the django project
+frond-end is completly created with help of template 
+back-end is completly created with help of model and views
+intilally we will work with views and templtes:
+first we nedd to create a project in the django using following steps:
+step-1:
+create a project with name "project2"
+step-2:
+create a app with name "app1" in the project
+once we create the app we need to launch the project in the vs code
+step-3:
+register the app in the project 
+goto the settings.py in the project,check the 
+with name "installed_apps" and in that we need to add the project
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'app1',
+]
+step-4:
+create the views to the project
+in django we have two types of views:
+functional based views:
+class based views:
+these above view are created with help "python"
+these views related files will be avaliable in the app folder,the application what we created in the project,in that we are going to have the "views.py",in that we nedd to create the view in the django project
+creating the fucntional view in the project:
+from django.shortcuts import render
+from django.http import HttpResponse
+# Create your views here.
+def display(request):#here display is the view and it is a functional view
+    s='<h1>hai this my first app in django</h1>'
+    return HttpResponse(s)
+step-5:
+we need to create the url for the view what you created in the urls.py
+and this urls.py will be avaliable in the project folder
+
+step-6:
+run the project in the server
+python manage.py runserver
+
+create a project with name "project3"
+in the create the three apps with name app1,app2,app3
+create view in each app with name display1(app1),display2(app2),
+display3(app3)
+step-1:
+create the project
+django-admin startproject project3
+step-2:
+create the app1
+python manage.py startapp app1
+create the app2
+python manage.py startapp app2
+create the app3
+python manage.py startapp app3
+step-3:
+launch the project in the vscode editor
+register the apps in the project "settings.py" files
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'app1',
+    'app2',
+    'app3',
+]
+step:
+create the views for each app:
+for app1(views.py):
+from django.shortcuts import render
+from django.http import HttpResponse
+def display1(request):
+    s1="<h1>this is from app1"
+    return HttpResponse(s1)
+for app2(views.py):
+from django.shortcuts import render
+from django.http import HttpResponse
+def display2(request):
+    s1="<h1>this is from app2"
+    return HttpResponse(s1)
+for app3(views.py):
+from django.shortcuts import render
+from django.http import HttpResponse
+def display3(request):
+    s1="<h1>this is from app3"
+    return HttpResponse(s1)
+step:
+create the urls for each app view in the urls.py in the project folder
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('display1/', v1.display1),
+    path('display2/', v2.display2),
+    path('display3/', v3.display3),
+]
+
+step:
+run the project in the server
+python manage.py runserver
+
+working with template folder in the django:
+template folder is used to keep the all html files of the project
+let create project with name "templateproject"
+step-1:
+create the project with name "templateproject"
+step-2:
+create the app in the "templateproject"
+step-3:
+register the app in the project folder
+step-4:
+create the folder  with the name "templates" in the project
+we need to register the template as follows in the settings.py in the project:
+
+step-5:
+create the html file with name in the "home.html"  in the
+templates folder
+step-6:
+create the view for the html file in the app 
+from django.shortcuts import render
+from django.http import HttpResponse
+def display(request):
+    return render(request,'home.html')
+step-7:
+create the url for the view in the urls.py in the project folder
+from django.contrib import admin
+from django.urls import path
+from app1 import views
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('mydisplay1',views.display),
+]
+step-8:
+run project in the server
+python manage.py runserver
+
+create a project with name "templateproject2"
+create the apps in the project app1,app2,app3 in the project
+create template folder in the project
+in the template fodler create three html files are app1.html,app2.html,app3.html
+create saparate view for every html file in the every app views file
+step-1:
+create the project with name "templateproject2"
+django-admin startproject templateproject2
+step-2:
+create the apps in the project
+python manage.py app1
+python manage.py app2
+python manage.py app3
+step-3:
+register the apps in the project file called "settings.py"
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'app1',
+    'app2',
+    'app3',
+]
+step-4:
+create the "templates" folder in the project
+step-5:
+register the templates folder inside the "settings.py" file
+step-6:
+create the htmls files in the templates folder as follows
+app1.html
+app2.html
+app3.html
+step-7:
+create the views for each html file in the corresponding app
+folder
+step-8:
+create the url for each view in the urls.py in the project folder
+step-9:
+run the project in the server
+------------------------------------------------------------------------------------
+working with html files in django folder:
+step-1:
+create the project with name "template_project"
+django-admin startproject template_project
+cd template_project
+step-2:
+create the app in the project with the name "app1"
+python manage.py startapp app1
+launch the project in the vs code:
+code .
+step-3:
+create the a folder witht the name "templates" in the project folder
+step-4:
+register the app in the project(settings.py)
+step-5:
+register the templates folder in the project(settings.py)
+step-6:
+create a file with name "home.html" in the template folder
+step-7:
+create the view in the app1 folder with name "home"
+in the views.py
+step-8:
+create the url for the view in the urls.py of the project folder
+step-9:
+run the project in the server
+python manage.py runserver
+
+how to work with the django project admin module:
+to work with django project admin module we will use the following steps:
+step-1:
+create the project:
+django-admin startproject myadminproject
+step-2:
+create the app
+python manage startapp app1
+step-3:
+create the credentials for the admin module
+python manage.py makemigrations
+python manage.py createsuperuser
+step-4:
+register the app in the project
+step-5:
+create the view in the views.py file
+step-6:
+create the url for view in the urls.py file
+step-7:
+run the project in the server 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
