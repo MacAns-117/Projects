@@ -1,0 +1,55 @@
+<!-- all_patients.html -->
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    <title>All Patients</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2>All Patients</h2>
+        <!-- Add Patient Button -->
+        <div class="mb-3">
+            <a href="{% url 'add_patient' %}" class="btn btn-success">Add Patient</a>
+        </div>
+        <!-- Add Filter Form -->
+    <div class="mb-3 d-inline-block ml-2">
+        <form action="{% url 'filter_patients' %}" method="get" class="d-inline">
+            <input type="text" name="query" placeholder="ID or Name" class="form-control d-inline-block" style="width: auto;">
+            <button type="submit" class="btn btn-info">Filter</button>
+        </form>
+    </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Blood Group</th>
+                    <th>Age</th>
+                    <th>Disease</th>
+                    <th>Location</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                <tr>
+                    <td>{{ patient.Name }}</td>
+                    <td>{{ patient.Blood_group }}</td>
+                    <td>{{ patient.Age }}</td>
+                    <td>{{ patient.Disease }}</td>
+                    <td>{{ patient.Location }}</td>
+                    <td>
+                        <!-- Update Button -->
+                        <a href="{% url 'update_patient' patient.id %}" class="btn btn-primary btn-sm">Update</a>
+                        <!-- Delete Button -->
+                        <a href="{% url 'delete_patient' patient.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this?');">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% endblock %}
