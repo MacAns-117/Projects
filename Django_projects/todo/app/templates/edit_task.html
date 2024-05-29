@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Edit Task</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <h3 class="card-title text-center">Edit Task</h3>
+        <form method="POST" action="{% url 'edit_task' task.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="taskName" class="form-label">Task Name</label>
+                <input type="text" class="form-control" id="taskName" name="task_name" value="{{ task.task_name }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required>{{ task.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" name="status" required>
+                    <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+                    <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-custom">Update Task</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
