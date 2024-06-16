@@ -1,0 +1,40 @@
+{% extends 'base_login_signup.html' %}
+
+{% block title %}
+<title>Login</title>
+{% endblock %}
+
+{% block content %}
+<section class="bg-paper">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-6">
+                <div class="wrapper">
+                    <div class="form-side">
+                        <div class="form-box login">
+                            <h2>Login</h2>
+                            <form method="post" action="{% url 'log' %}">
+                                {% csrf_token %}
+                                <div class="input-box">
+                                    <input type="text" name="username" required>
+                                    <label>Username</label>
+                                    <i class='bx bxs-user'></i>
+                                </div>
+                                <div class="input-box">
+                                    <input type="password" name="password" required>
+                                    <label>Password</label>
+                                    <i class='bx bxs-lock-alt'></i>
+                                </div>
+                                <button type="submit" class="btn">Login</button>
+                                <div class="logreg-link">
+                                    <p>Don't have an account? <a href="{% url 'signup' %}" class="register-link">SignUp</a></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
