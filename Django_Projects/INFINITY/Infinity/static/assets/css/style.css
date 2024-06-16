@@ -1,0 +1,30 @@
+
+nav.navbar.navbar-expand-lg {
+    background: #043b5c;
+}
+a.nav-link {
+    color: #fff !important;
+}
+li.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+ul.dropdown-menu {
+    padding: 85% 0%;
+    width: 100vw;
+    height: 35vh;
+    left: -874%;
+    background:#043b5c;
+    border:none;
+}
+ul.dropdown-menu.show {
+    margin: 4% 0 0 -935%;
+    padding: 85% 0%;
+}
+a.dropdown-item {
+    color: #fff;
+}
+section.top_header {
+    padding: 5px 0px;
+    
+    background: #043b5ced;
+}
