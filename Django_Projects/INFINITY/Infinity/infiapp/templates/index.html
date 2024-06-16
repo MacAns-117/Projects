@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+<title>XYZ</title>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-section">
+        <video src="{% static 'assets/video/home_page.mp4' %}" class="video-bg" autoplay muted loop aria-hidden="true">
+            Your browser does not support the video tag.
+        </video>
+        <div class="fallback-bg" style="background-image: url('{% static 'assets/images/fallback.jpg' %}');"></div>
+        <div class="content">
+            <!-- Add any content you want to appear on top of the video here -->
+            <h1>Welcome to INFYDATA</h1>
+            <p>Your trusted IT solutions partner</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
