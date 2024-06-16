@@ -7,7 +7,7 @@ Machine learning and data analysis techniques are utilized to predict customer c
 Robust data analysis is performed using libraries such as Numpy, Pandas, Scikitlearn, Seaborn, and Missingno.
 
 Libraries used: Numpy, Pandas, Scikit-learn, Seaborn, Missingno.
-Skills used: Data Analysis, Machine Learning.
+<br>Skills used: Data Analysis, Machine Learning.
 
 
 ## Predicting House Price Using Advanced Ensemble Techniques (10/2020 - 12/2021)
@@ -16,7 +16,7 @@ Conducted price prediction analysis for Indian houses using advanced libraries a
 Gained a thorough understanding of the Indian housing market and demonstrated proficiency in data analysis and modeling.
 
 Libraries used: Pandas, Numpy, Scikit-learn, Seaborn, Folium, Streamlit and Pycaret.
-Skills used: Data Analysis, MachineLearning.
+<br>Skills used: Data Analysis, MachineLearning.
 
 
 ## Stella Bot (06/2020 - 08/2020)
