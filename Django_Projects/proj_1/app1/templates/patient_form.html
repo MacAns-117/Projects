@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Update Patient Details</title>
+{% endblock %}
+    
+{% block content %}
+
+    <div class="container mt-5">
+        <h2>Update Patient Details</h2>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="Name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="Name" name="Name" value="{{ patient.Name }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="Blood_group" class="form-label">Blood Group</label>
+                <input type="text" class="form-control" id="Blood_group" name="Blood_group" value="{{ patient.Blood_group }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="Age" class="form-label">Age</label>
+                <input type="number" class="form-control" id="Age" name="Age" value="{{ patient.Age }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="Disease" class="form-label">Disease</label>
+                <input type="text" class="form-control" id="Disease" name="Disease" value="{{ patient.Disease }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="Location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="Location" name="Location" value="{{ patient.Location }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+
+{% endblock %}
