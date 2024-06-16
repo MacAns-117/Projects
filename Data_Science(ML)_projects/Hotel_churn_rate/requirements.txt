@@ -1,0 +1,12 @@
+# To install use this --> pip install -r requirements.txt
+# To make requirements txt after installing, use this --> pip freeze > requirements.txt
+
+numpy
+pandas
+scipy
+scikit-learn
+seaborn
+matplotlib
+missingno
+sidetable
+xgboost
