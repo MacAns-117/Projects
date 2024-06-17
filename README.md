@@ -1,9 +1,9 @@
 # Data Analytics Projects
 
-## Insatgram User Analytics (07/2023 - 07/2023)
+-- Insatgram User Analytics (07/2023 - 07/2023)
 
 
-## Playstore Apps Analysis & Visualization (01/2023 - 01/2023)
+-- Playstore Apps Analysis & Visualization (01/2023 - 01/2023)
 
 
 ## Accenture Data Analytics and Visualization (12/2022 - 12/2022)
