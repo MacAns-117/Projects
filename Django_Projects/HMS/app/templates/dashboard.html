@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Dashboard</title>
+{% endblock %}
+
+{% block content %}
+<main class="container my-4">
+    <h2 class="mb-4">Dashboard</h2>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white text-center">
+                <div class="card-body">
+                    <span class="count display-4">2</span>
+                    <span class="label d-block">Payments</span>
+                    <a href="#" class="text-white">More Info</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white text-center">
+                <div class="card-body">
+                    <span class="count display-4">1</span>
+                    <span class="label d-block">Doctors</span>
+                    <a href="#" class="text-white">More Info</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white text-center">
+                <div class="card-body">
+                    <span class="count display-4">1</span>
+                    <span class="label d-block">Nurses</span>
+                    <a href="/nurses" class="text-white">More Info</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white text-center">
+                <div class="card-body">
+                    <span class="count display-4">2</span>
+                    <span class="label d-block">Patients</span>
+                    <a href="#" class="text-white">More Info</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-secondary text-white text-center">
+                <div class="card-body">
+                    <span class="count display-4">2</span>
+                    <span class="label d-block">Accountants</span>
+                    <a href="#" class="text-white">More Info</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-dark text-white text-center">
+                <div class="card-body">
+                    <span class="count display-4">1</span>
+                    <span class="label d-block">Pharmacists</span>
+                    <a href="#" class="text-white">More Info</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white text-center">
+                <div class="card-body">
+                    <span class="count display-4">1</span>
+                    <span class="label d-block">Laboratorists</span>
+                    <a href="#" class="text-white">More Info</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-teal text-white text-center">
+                <div class="card-body">
+                    <span class="count display-4">1</span>
+                    <span class="label d-block">Receptionists</span>
+                    <a href="#" class="text-white">More Info</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

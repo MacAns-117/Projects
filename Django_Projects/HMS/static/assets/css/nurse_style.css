@@ -1,0 +1,59 @@
+body {
+    background-color: #f0f8ff;
+}
+
+.logo {
+    width: 100px; /* Increased size */
+    height: 100px; /* Increased size */
+    display: block;
+    margin: 0 auto; /* Center the logo */
+}
+
+h1 {
+    font-size: 28px; /* Slightly increased font size */
+    color: #333;
+    text-align: center; /* Center the title */
+    margin-top: 10px; /* Add some space between the logo and the title */
+}
+
+.modal-title {
+    color: #000000;
+}
+
+.modal-body {
+    color: #000000;
+}
+
+.card {
+    margin-top: 20px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 14px;
+}
+
+.card-img-top {
+    width: 100%;
+    height: auto; /* Ensure the image scales properly */
+    max-height: 250px; /* Limit the height of the image */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+}
+
+.more-info-btn {
+    background-color: #17a2b8; /* Info color */
+    color: white;
+}
+
+.update-details-btn {
+    background-color: #ffc107; /* Warning color */
+    color: white;
+}
+
+.more-info-btn:hover, .update-details-btn:hover {
+    opacity: 0.8;
+}

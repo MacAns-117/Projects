@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+<title>Nurses</title>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="text-center mb-4">
+        <img src="{% static 'assets/images/nurse.jpg' %}" alt="Nurses Logo" class="logo">
+        <h1 class="d-inline-block align-middle">NURSES</h1>
+    </div>
+    <div class="d-flex justify-content-between mb-3">
+        <div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNurseModal">Add Nurse</button>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <select class="form-select" id="department" onchange="filterNurses()">
+                    <option selected>Department</option>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Gynecology">Gynecology</option>
+                    <option value="Orthopedics">Orthopedics</option>
+                    <!-- Add other departments here -->
+                </select>
+            </div>
+            <div class="col-md-6">
+                <select class="form-select" id="shift" onchange="filterNurses()">
+                    <option selected>Shift</option>
+                    <option value="5:00 AM - 1:00 PM">5:00 AM - 1:00 PM</option>
+                    <option value="1:00 PM - 9:00 PM">1:00 PM - 9:00 PM</option>
+                    <option value="9:00 PM - 5:00 AM">9:00 PM - 5:00 AM</option>
+                    <!-- Add other shifts here -->
+                </select>
+            </div>
+        </div>
+    </div>
+    
+
+<div class="container">
+    <div class="row" id="nurses-cards">
+        {% for nurse in nurses %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3 nurse-card" data-department="{{ nurse.department }}" data-shift="{{ nurse.shift }}">
+            <div class="card">
+                <img src="{{ nurse.profile_picture.url }}" class="card-img-top nurse-img" alt="Nurse Image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ nurse.name }}</h5>
+                    <p class="card-text">Gender: {{ nurse.gender }}</p>
+                    <p class="card-text">Department: {{ nurse.department }}</p>
+                    <p class="card-text">Shift: {{ nurse.shift }}</p>
+                    <p class="card-text">Type of Care: {{ nurse.care }}</p>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-warning update-details-btn" data-bs-toggle="modal" data-bs-target="#updateNurseModal" onclick="populateUpdateModal('{{ nurse.id }}', '{{ nurse.name }}', '{{ nurse.gender }}', '{{ nurse.department }}', '{{ nurse.shift }}', '{{ nurse.care }}')">Update Details</button>
+                        <button class="btn btn-danger delete-details-btn" data-bs-toggle="modal" data-bs-target="#deleteNurseModal" onclick="populateDeleteModal('{{ nurse.id }}', '{{ nurse.name }}')">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- Add Nurse Modal -->
+<div class="modal fade" id="addNurseModal" tabindex="-1" aria-labelledby="addNurseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNurseModalLabel">Add Nurse</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" action="{% url 'add_nurse' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nurseProfilePicture" class="form-label">Profile Picture</label>
+                        <input type="file" class="form-control" id="nurseProfilePicture" name="nurseProfilePicture" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseName" class="form-label">Nurse Name</label>
+                        <input type="text" class="form-control" id="nurseName" name="nurseName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseGender" class="form-label">Gender</label>
+                        <select class="form-select" id="nurseGender" name="nurseGender">
+                            <option selected>Choose...</option>
+                            <option value="F">Female</option>
+                            <option value="M">Male</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseDepartment" class="form-label">Department</label>
+                        <select class="form-select" id="nurseDepartment" name="nurseDepartment">
+                            <option selected>Choose...</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Gynecology">Gynecology</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <!-- Add other departments here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseShift" class="form-label">Shift</label>
+                        <select class="form-select" id="nurseShift" name="nurseShift">
+                            <option selected>Choose...</option>
+                            <option value="5:00 AM - 1:00 PM">5:00 AM - 1:00 PM</option>
+                            <option value="1:00 PM - 9:00 PM">1:00 PM - 9:00 PM</option>
+                            <option value="9:00 PM - 5:00 AM">9:00 PM - 5:00 AM</option>
+                            <!-- Add other shifts here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseCare" class="form-label">Type of Care</label>
+                        <input type="text" class="form-control" id="nurseCare" name="nurseCare">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseExperience" class="form-label">Years of Experience</label>
+                        <input type="number" class="form-control" id="nurseExperience" name="nurseExperience" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseCertifications" class="form-label">Certifications</label>
+                        <input type="text" class="form-control" id="nurseCertifications" name="nurseCertifications">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseContact" class="form-label">Contact Number</label>
+                        <input type="tel" class="form-control" id="nurseContact" name="nurseContact" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="nurseEmail" name="nurseEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseAddress" class="form-label">Address</label>
+                        <textarea class="form-control" id="nurseAddress" name="nurseAddress" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Nurse Modal -->
+<div class="modal fade" id="updateNurseModal" tabindex="-1" aria-labelledby="updateNurseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateNurseModalLabel">Update Nurse Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateNurseForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="updateNurseId" name="nurseId">
+                    <div class="mb-3">
+                        <label for="updateNurseProfilePicture" class="form-label">Profile Picture</label>
+                        <input type="file" class="form-control" id="updateNurseProfilePicture" name="nurseProfilePicture" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseName" class="form-label">Nurse Name</label>
+                        <input type="text" class="form-control" id="updateNurseName" name="nurseName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseGender" class="form-label">Gender</label>
+                        <select class="form-select" id="updateNurseGender" name="nurseGender">
+                            <option selected>Choose...</option>
+                            <option value="F">Female</option>
+                            <option value="M">Male</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseDepartment" class="form-label">Department</label>
+                        <select class="form-select" id="updateNurseDepartment" name="nurseDepartment">
+                            <option selected>Choose...</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Gynecology">Gynecology</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <!-- Add other departments here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseShift" class="form-label">Shift</label>
+                        <select class="form-select" id="updateNurseShift" name="nurseShift">
+                            <option selected>Choose...</option>
+                            <option value="5:00 AM - 1:00 PM">5:00 AM - 1:00 PM</option>
+                            <option value="1:00 PM - 9:00 PM">1:00 PM - 9:00 PM</option>
+                            <option value="9:00 PM - 5:00 AM">9:00 PM - 5:00 AM</option>
+                            <!-- Add other shifts here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseCare" class="form-label">Type of Care</label>
+                        <input type="text" class="form-control" id="updateNurseCare" name="nurseCare">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseExperience" class="form-label">Years of Experience</label>
+                        <input type="number" class="form-control" id="updateNurseExperience" name="nurseExperience" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseCertifications" class="form-label">Certifications</label>
+                        <input type="text" class="form-control" id="updateNurseCertifications" name="nurseCertifications">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseContact" class="form-label">Contact Number</label>
+                        <input type="tel" class="form-control" id="updateNurseContact" name="nurseContact" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="updateNurseEmail" name="nurseEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNurseAddress" class="form-label">Address</label>
+                        <textarea class="form-control" id="updateNurseAddress" name="nurseAddress" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Nurse Details Modal -->
+<div class="modal fade" id="nurseDetailsModal" tabindex="-1" aria-labelledby="nurseDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nurseDetailsModalLabel">Nurse Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <img id="nurseProfilePicture" src="" class="img-fluid rounded" alt="Nurse Image">
+                </div>
+                <p><strong>Name:</strong> <span id="nurseName"></span></p>
+                <p><strong>Gender:</strong> <span id="nurseGender"></span></p>
+                <p><strong>Department:</strong> <span id="nurseDepartment"></span></p>
+                <p><strong>Shift:</strong> <span id="nurseShift"></span></p>
+                <p><strong>Type of Care:</strong> <span id="nurseCare"></span></p>
+                <p><strong>Years of Experience:</strong> <span id="nurseExperience"></span></p>
+                <p><strong>Certifications:</strong> <span id="nurseCertifications"></span></p>
+                <p><strong>Contact Number:</strong> <span id="nurseContact"></span></p>
+                <p><strong>Email:</strong> <span id="nurseEmail"></span></p>
+                <p><strong>Address:</strong> <span id="nurseAddress"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Delete Nurse Modal -->
+<!-- Delete Nurse Modal -->
+<div class="modal fade" id="deleteNurseModal" tabindex="-1" aria-labelledby="deleteNurseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteNurseModalLabel">Delete Nurse</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteNurseName"></strong>?</p>
+                <form id="deleteNurseForm" method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" id="deleteNurseId" name="nurseId">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Include the JavaScript file -->
+<script src="{% static 'assets/js/nurse_management.js' %}"></script>
+<script>
+    function populateUpdateModal(id, name, gender, department, shift, care) {
+        document.getElementById('updateNurseId').value = id;
+        document.getElementById('updateNurseName').value = name;
+        document.getElementById('updateNurseGender').value = gender;
+        document.getElementById('updateNurseDepartment').value = department;
+        document.getElementById('updateNurseShift').value = shift;
+        document.getElementById('updateNurseCare').value = care;
+    
+        // Set the form action to the update URL
+        document.getElementById('updateNurseForm').action = '/update_nurse/' + id + '/';
+    }
+
+        function showNurseDetails(profilePicture, name, gender, department, shift, care, experience, certifications, contact, email, address) {
+            console.log('Profile Picture:', profilePicture);
+            console.log('Name:', name);
+            console.log('Gender:', gender);
+            console.log('Department:', department);
+            console.log('Shift:', shift);
+            console.log('Care:', care);
+            console.log('Experience:', experience);
+            console.log('Certifications:', certifications);
+            console.log('Contact:', contact);
+            console.log('Email:', email);
+            console.log('Address:', address);
+        
+            document.getElementById('nurseProfilePicture').src = profilePicture;
+            document.getElementById('nurseName').textContent = name;
+            document.getElementById('nurseGender').textContent = gender;
+            document.getElementById('nurseDepartment').textContent = department;
+            document.getElementById('nurseShift').textContent = shift;
+            document.getElementById('nurseCare').textContent = care;
+            document.getElementById('nurseExperience').textContent = experience;
+            document.getElementById('nurseCertifications').textContent = certifications;
+            document.getElementById('nurseContact').textContent = contact;
+            document.getElementById('nurseEmail').textContent = email;
+            document.getElementById('nurseAddress').textContent = address;
+        
+            var nurseDetailsModal = new bootstrap.Modal(document.getElementById('nurseDetailsModal'));
+            nurseDetailsModal.show();
+        }
+        
+        function populateDeleteModal(id, name) {
+            document.getElementById('deleteNurseId').value = id;
+            document.getElementById('deleteNurseName').innerText = name;
+        
+            // Set the form action to the delete URL
+            document.getElementById('deleteNurseForm').action = '/delete_nurse/' + id + '/';
+        }
+        
+
+</script>
+
+{% endblock %}
