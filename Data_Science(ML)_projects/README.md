@@ -25,17 +25,17 @@
   </thead>
   <tbody>
     <tr>
-      <td><a href="hotel-churn-prediction/"><code>hotel-churn-prediction/</code></a></td>
+      <td><a href="Hotel_churn_rate/"><code>Hotel_churn_rate</code></a></td>
       <td>Will this hotel booking cancel?</td>
       <td>Random forest, holdout <strong>ROC-AUC 0.815</strong></td>
     </tr>
     <tr>
-      <td><a href="indian-house-price-prediction/"><code>indian-house-price-prediction/</code></a></td>
+      <td><a href="Predicting_HP_Using_ADV_Ensamble_Techniques/"><code>Indian house prices</code></a></td>
       <td>Asking price of an Indian listing</td>
       <td>Gradient boosting, typical error <strong>₹12.1 lakh</strong></td>
     </tr>
     <tr>
-      <td><a href="stella-bot/"><code>stella-bot/</code></a></td>
+      <td><a href="Stella_Bot/"><code>Stella_Bot</code></a></td>
       <td>Voice assistant (not ML)</td>
       <td>Keyword commands + Wikipedia / jokes / sites</td>
     </tr>
