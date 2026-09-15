@@ -1,0 +1,9 @@
+rank,brand,name,price,rating,cosine
+0,AMOREPACIFIC,Color Control Cushion Compact Broad Spectrum SPF 50+,60,4.0,1.0
+1,LANEIGE,BB Cushion Hydra Radiance SPF 50,38,4.3,0.535
+2,SUPERGOOP!,CC Cream Daily Correct Broad Spectrum SPF 35+ Sunscreen,34,4.4,0.333
+3,IT COSMETICS,Your Skin But Better™ CC+Illumination™ Cream with SPF 50+,38,3.9,0.288
+4,LANEIGE,Water Sleeping Mask,25,4.4,0.279
+5,IT COSMETICS,Your Skin But Better™ CC+™ Cream with SPF 50+,38,4.1,0.259
+6,LANCÔME,Visionnaire Advanced Multi-Correcting Cream,88,4.6,0.253
+7,DR. JART+,Cicapair ™ Tiger Grass Color Correcting Treatment SPF 30,52,4.2,0.243
