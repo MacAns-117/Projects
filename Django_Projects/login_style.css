@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body, html {
+    height: 100%;
+    /* Enhanced background gradient for the entire page */
+    background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.form-side, .info-side {
+    flex: 1;
+    padding: 20px;
+}
+
+.form-box {
+    background: rgba(255, 255, 255, 0.85); /* Lighter semi-transparent background */
+    border-radius: 15px; /* Softer rounded corners */
+    padding: 40px;
+    color: #333; /* Darker text color for better readability */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+.form-box h2 {
+    color: #6C63FF; /* Consistent with label color */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px 10px 10px 40px; /* Make space for icon */
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.input-box input:focus~label,
+.input-box input:valid~label {
+    top: -25px;
+    left: 40px;
+    color: #6C63FF;
+    font-size: 15px;
+}
+
+.input-box label {
+    position: absolute;
+    top: 10px;
+    left: 40px;
+    transition: all 0.3s ease;
+    color: #6C63FF;
+    pointer-events: none;
+}
+
+.input-box i {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #495057;
+}
+
+.input-box:hover i {
+    transform: translateY(-50%) scale(1.1);
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-image: linear-gradient(to right, #ff758c, #ff7eb3);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background-image 0.3s ease;
+}
+
+.btn:hover {
+    background-image: linear-gradient(to right, #ff758c, #ff89c4);
+}
+
+.logreg-link p, .logreg-link p a {
+    text-align:center;
+}
+
+

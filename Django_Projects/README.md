@@ -1,41 +1,77 @@
-# Django Projects
+# Task Manager
 
+[![python](https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54)](.)
+[![django](https://img.shields.io/badge/Django-5.0-092E20?style=flat-square&logo=django&logoColor=white)](.)
+[![sqlite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)](.)
+[![license](https://img.shields.io/badge/license-MIT-green?style=flat-square)](.)
 
-## Authentication App(only login/signup) titled auth folder 
+> Small Django app: sign up, log in, keep a private list of tasks. Bootstrap 5, SQLite. Practice project, not a SaaS.
 
-Developed a Django-based authentication application featuring separate login and signup functionalities for regular users and admin users. Implemented conditional redirection to an admin panel for admin users and a user-specific home page for regular users upon successful login. Enhanced user interface using HTML, CSS, and Bootstrap.
+---
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL)  
-**Skills used:** Web Development, Django, SQL, Frontend Design
+## What it does
 
+A logged-in user can add / edit / delete tasks and toggle Pending ↔ Completed. The list on Home is **that user only**. Filter by status on View Tasks.
 
-## Request Management System App titled smtp1 folder
+| | |
+| --- | --- |
+| Auth | Django `User`. Sign up needs matching passwords. `login_required` on every task page. |
+| Tasks | `task_name`, `description`, `status` (`Pending` / `Completed`), `owner`, `created_at` |
+| UI | Bootstrap 5. Add / edit in a modal. Delete is a **POST** (not a GET link). |
+| Tests | 6 cases — login redirect, isolation, add, foreign delete 404, status toggle, signup |
 
-Developed a Request Management System application with a unified login for both normal and admin users, and a signup process for normal users. Upon successful signup, normal users are redirected to the login page. Logged-in normal users can access a request form to submit their requests, which triggers an email notification to the admin via SMTP protocol. Admin users, upon logging in, are presented with a list of pending requests to approve or reject. An email notification is sent to the user informing them whether their request was approved or rejected.
+This is CRUD + auth. No reminders, no teams, no REST API.
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL), SMTP  
-**Skills used:** Web Development, Django, SQL, Frontend Design, Email Integration
+---
 
+## How to run
 
-## Hospital Management System-1 App(only CRUD Operations on patient details) titled proj1 folder
+```bash
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser   # optional, for /admin/
+python manage.py runserver
+```
 
-Developed a Hospital Management System application focused on CRUD operations for patient details. Implemented login and signup functionalities for the admin, who, upon successful authentication, is redirected to a list of admitted patients. The admin can perform all CRUD operations—create, update, read, and delete—on the patient list, ensuring efficient management of patient information.
+Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) — that sends you to login. Sign up first.
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL)  
-**Skills used:** Web Development, Django, SQL, Frontend Design
+```bash
+python manage.py test
+```
 
+`db.sqlite3` is created on migrate. It is gitignored. Do not commit a database with real passwords in it.
 
-## Hospital Management System-2 App(only Nurse List details) titled HMS folder
+---
 
-Developed a Hospital Management System application focused on CRUD operations for nurse details. Implemented login and signup functionalities for the admin, who, upon successful authentication, is redirected to a list of nurses working in the hospital. The admin can view nurse information, add new nurses, update nurse details, and delete nurses who are no longer working in the hospital, ensuring efficient management of nurse records.
+## Layout
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL)  
-**Skills used:** Web Development, Django, SQL, Frontend Design
+```text
+README.md
+requirements.txt
+manage.py
+todo/settings.py          project settings
+app/models.py             Task
+app/views.py
+app/forms.py
+app/urls.py
+app/templates/            Bootstrap pages
+static/assets/css/
+```
 
+Drop this folder in as `Django_Projects/todo/` on GitHub.
 
-## Task Manager App titled todo folder
+---
 
-Developed a Task Manager application with admin login functionality. The admin can perform CRUD operations—add, view, update, and delete tasks. A unique feature of this project is the use of Bootstrap Modals for task management, enhancing the user experience by providing a seamless and interactive interface for CRUD operations.
+## Notes I actually hit
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL)  
-**Skills used:** Web Development, Django, SQL, Frontend Design, Bootstrap Modals
+- Unauthenticated `/index/` used to bounce to `/accounts/login/`, which did not exist. `LOGIN_URL` is now `login`.
+- Tasks used to be a single global table. They are per `owner` now. Bob cannot see or delete Alice's row (the test checks 404).
+- Delete used to be a GET `<a href>`. It is a POST form.
+- `SECRET_KEY` is `DJANGO_SECRET_KEY` or a **dev-only** fallback. Do not use the fallback on a public host.
+- Signup uses Django's password validators (min length, not all-numeric, etc.).
+
+---
+
+## License
+
+MIT. Bootstrap / Boxicons / Font Awesome stay with their CDNs.
