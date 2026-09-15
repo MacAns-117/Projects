@@ -1,0 +1,106 @@
+# =====================
+# Python (all projects)
+# =====================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# =====================
+# Virtual environments
+# =====================
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# =====================
+# Environment variables (CRITICAL — contains API keys)
+# =====================
+.env
+.env.local
+.env.*.local
+*.env
+
+# =====================
+# Jupyter Notebook checkpoints
+# =====================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# =====================
+# IDE — VS Code, PyCharm, etc.
+# =====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# =====================
+# OS files
+# =====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =====================
+# Logs
+# =====================
+*.log
+logs/
+
+# =====================
+# GenAI_Projects / Rag_Document_QA — specific
+# =====================
+# Vector database (local ChromaDB storage)
+GenAI_Projects/Rag_Document_QA/chroma_db/
+GenAI_Projects/Rag_Document_QA/chroma_db_test/
+
+# Sample PDFs (don't commit other people's copyrighted content)
+GenAI_Projects/Rag_Document_QA/data/sample_pdfs/*.pdf
+
+# =====================
+# Django projects — sensitive
+# =====================
+# Environment variables for Django
+Django_Projects/*/.env
+Django_Projects/*/db.sqlite3
+Django_Projects/*/secret_key.txt
+
+# =====================
+# Data files (large datasets shouldn't be in git)
+# =====================
+*.csv.gz
+*.parquet
+*.feather
+data/raw/
+data/external/
+
+# =====================
+# Streamlit / Hugging Face
+# =====================
+.streamlit/
+.streamlit/secrets.toml

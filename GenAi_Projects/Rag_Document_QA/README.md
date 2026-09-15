@@ -1,15 +1,5 @@
 <h1>Multi-Doc RAG Q&amp;A with Citations</h1>
 
-<p>
-  <img src="https://img.shields.io/badge/projects-1-blue?style=flat-square" alt="1 project">
-  <img src="https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54" alt="Python">
-  <img src="https://img.shields.io/badge/langchain-1C3C3C?style=flat-square&logo=langchain&logoColor=white" alt="LangChain">
-  <img src="https://img.shields.io/badge/chromadb-FF6F00?style=flat-square&logo=chroma&logoColor=white" alt="ChromaDB">
-  <img src="https://img.shields.io/badge/groq-F55036?style=flat-square&logo=groq&logoColor=white" alt="Groq">
-  <img src="https://img.shields.io/badge/streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white" alt="Streamlit">
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
-</p>
-
 <p>A Retrieval-Augmented Generation system that lets users ask natural-language questions across multiple PDF documents and get answers with citations back to the source documents and page numbers.</p>
 
 <h2>What it does</h2>

@@ -1,0 +1,21 @@
+# Core
+langchain==0.3.7
+langchain-community==0.3.5
+langchain-groq==0.2.1
+langchain-huggingface==0.1.2
+
+# Vector DB
+chromadb==0.5.20
+
+# Embeddings
+sentence-transformers==3.3.0
+
+# PDF parsing
+pdfplumber==0.11.4
+
+# UI
+streamlit==1.40.1
+
+# Utils
+python-dotenv==1.0.1
+pypdf==5.1.0
