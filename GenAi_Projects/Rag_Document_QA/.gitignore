@@ -1,38 +1,17 @@
-# Environment variables (CRITICAL — contains API keys)
 .env
 .env.local
-.env.*.local
-
-# Python virtual environments
 venv/
 .venv/
-env/
-ENV/
-
-# Vector database (local ChromaDB storage)
 chroma_db/
+chroma_db_eval/
 chroma_db_test/
-
-# Python cache
 __pycache__/
 *.py[cod]
-**/__pycache__/
-
-# Sample PDFs (don't commit copyrighted content)
-data/sample_pdfs/*.pdf
-
-# Jupyter checkpoints
+.pytest_cache/
 .ipynb_checkpoints/
-
-# IDE
+data/uploaded_pdfs/*
+!data/uploaded_pdfs/.gitkeep
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# OS
 .DS_Store
-Thumbs.db
-
-# Streamlit
 .streamlit/secrets.toml

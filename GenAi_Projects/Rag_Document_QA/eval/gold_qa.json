@@ -1,0 +1,189 @@
+{
+  "description": "24 questions over two public arXiv PDFs. gold_pages are 1-indexed pdfplumber pages. out_of_scope items must NOT be answered from the papers.",
+  "documents": [
+    {
+      "file": "attention_is_all_you_need.pdf",
+      "cite": "Vaswani et al., Attention Is All You Need, arXiv:1706.03762"
+    },
+    {
+      "file": "rag_lewis_2020.pdf",
+      "cite": "Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, arXiv:2005.11401"
+    }
+  ],
+  "questions": [
+    {
+      "id": "att-authors",
+      "question": "Who are the authors of Attention Is All You Need?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 1}],
+      "must_contain_any": ["Vaswani", "Shazeer", "Parmar"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-encoder-n",
+      "question": "How many identical layers are in the Transformer encoder stack?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 3}],
+      "must_contain_any": ["6", "N = 6", "N=6"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-dmodel",
+      "question": "What is the Transformer d_model dimension in the base model?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 3}],
+      "must_contain_any": ["512"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-scaled-dot",
+      "question": "What is scaled dot-product attention?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 4}],
+      "must_contain_any": ["softmax", "dot product", "sqrt"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-heads",
+      "question": "How many parallel attention heads does the base Transformer use?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 5}],
+      "must_contain_any": ["8"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-positional",
+      "question": "Why does the Transformer add positional encodings?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 6}],
+      "must_contain_any": ["position", "order", "recurrence"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-bleu-big",
+      "question": "What BLEU does Transformer (big) report on WMT 2014 English-to-German?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 8}],
+      "must_contain_any": ["28.4"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-dropout",
+      "question": "What residual dropout rate P_drop does the base Transformer use?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 8}],
+      "must_contain_any": ["0.1"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-parsing-f1",
+      "question": "What WSJ Section 23 F1 does the 4-layer Transformer report in the semi-supervised constituency parsing setting?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 10}],
+      "must_contain_any": ["92.7"],
+      "out_of_scope": false
+    },
+    {
+      "id": "att-feedforward",
+      "question": "What inner-layer dimensionality d_ff does the base Transformer use in Table 3?",
+      "gold_pages": [{"source": "attention_is_all_you_need.pdf", "page": 9}],
+      "must_contain_any": ["2048"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-title",
+      "question": "What does the RAG paper title expand to?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 1}],
+      "must_contain_any": ["Retrieval-Augmented Generation"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-author",
+      "question": "Who is the corresponding author listed with the plewis@fb.com address?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 1}],
+      "must_contain_any": ["Patrick Lewis", "Lewis"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-seq-token",
+      "question": "What is the difference between RAG-Sequence and RAG-Token?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 3}],
+      "must_contain_any": ["RAG-Sequence", "RAG-Token", "document"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-fixed-encoder",
+      "question": "Do the authors fine-tune the document encoder BERT_d during RAG training?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 4}],
+      "must_contain_any": ["fixed", "not", "keep the document encoder"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-nq-score",
+      "question": "What Natural Questions exact-match score does RAG-Sequence report in Table 1?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 6}],
+      "must_contain_any": ["44.5"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-dpr-nq",
+      "question": "What Natural Questions score does DPR report in Table 1 of the RAG paper?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 6}],
+      "must_contain_any": ["41.5"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-jeopardy",
+      "question": "Why do the authors use Jeopardy question generation as a generation task?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 5}],
+      "must_contain_any": ["Jeopardy", "entity", "fact"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-impact",
+      "question": "What positive societal benefit do the RAG authors claim in Broader Impact?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 10}],
+      "must_contain_any": ["hallucinate", "factual", "Wikipedia"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-nq-train-size",
+      "question": "How many Natural Questions training instances are listed in Table 7?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 19}],
+      "must_contain_any": ["79169", "79,169"],
+      "out_of_scope": false
+    },
+    {
+      "id": "rag-t5-vs-rag",
+      "question": "What Natural Questions EM does closed-book T5-11B get compared with RAG-Sequence's 44.5?",
+      "gold_pages": [{"source": "rag_lewis_2020.pdf", "page": 19}],
+      "must_contain_any": ["34.5"],
+      "out_of_scope": false
+    },
+    {
+      "id": "cross-who-transformer",
+      "question": "Which paper introduces the Transformer that RAG later cites?",
+      "gold_pages": [
+        {"source": "attention_is_all_you_need.pdf", "page": 1},
+        {"source": "rag_lewis_2020.pdf", "page": 15}
+      ],
+      "must_contain_any": ["Attention Is All You Need", "Vaswani"],
+      "out_of_scope": false
+    },
+    {
+      "id": "cross-realm",
+      "question": "What is REALM according to the RAG paper?",
+      "gold_pages": [
+        {"source": "rag_lewis_2020.pdf", "page": 6},
+        {"source": "rag_lewis_2020.pdf", "page": 12}
+      ],
+      "must_contain_any": ["REALM", "Retrieval"],
+      "out_of_scope": false
+    },
+    {
+      "id": "oos-paris",
+      "question": "What is the capital of France?",
+      "gold_pages": [],
+      "must_contain_any": [],
+      "out_of_scope": true
+    },
+    {
+      "id": "oos-aptosl",
+      "question": "Who was the software engineer at Aptsol in 2024?",
+      "gold_pages": [],
+      "must_contain_any": [],
+      "out_of_scope": true
+    }
+  ]
+}

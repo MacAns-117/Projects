@@ -1,66 +1,148 @@
-"""
-Retriever module — wraps Chroma's search with citation-friendly return types.
-
-While vectorstore.similarity_search() returns raw Document objects, this
-module returns RetrievedChunk objects that explicitly expose source,
-page_num, text, and a citation string ready for display.
-
-This centralizes the "extract citation info from metadata" logic so
-downstream modules (chain.py, app.py) don't have to repeat it.
-"""
+"""Three retrieval modes: cosine similarity, MMR, hybrid (vector + BM25)."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
 from langchain_chroma import Chroma
+from rank_bm25 import BM25Okapi
 
-from src.vectorstore import get_vectorstore, DEFAULT_TOP_K
+from src.config import (
+    DEFAULT_DB_PATH,
+    DEFAULT_TOP_K,
+    HYBRID_VECTOR_WEIGHT,
+    MMR_LAMBDA,
+    SCORE_FLOOR,
+)
+from src.vectorstore import get_vectorstore
 
 
 @dataclass
 class RetrievedChunk:
-    """A chunk retrieved from the vector DB, with citation info exposed.
-
-    Attributes:
-        source: Filename of the original PDF (e.g., "resume.pdf").
-        page_num: 1-indexed page number this chunk came from.
-        text: The chunk text.
-        score: Similarity score (0-1, higher = more similar). May be None
-               if the underlying search didn't return scores.
-        citation: A pre-formatted citation string like "resume.pdf, p.3".
-    """
     source: str
     page_num: int
     text: str
     score: float | None
     citation: str
+    method: str = "similarity"
 
 
-def _format_citation(source: str, page_num: int) -> str:
-    """Format a citation string like 'resume.pdf, p.3'."""
+def _citation(source: str, page_num: int) -> str:
     return f"{source}, p.{page_num}"
 
 
-def _doc_to_retrieved(doc, score: float | None = None) -> RetrievedChunk:
-    """Convert a LangChain Document to a RetrievedChunk.
-
-    Extracts source and page from the document's metadata and formats
-    a citation string. This is the single place where the metadata
-    extraction logic lives — every consumer benefits.
-    """
-    metadata = doc.metadata or {}
-    source = metadata.get("source", "unknown")
-    page_num = metadata.get("page", 0)
-    text = doc.page_content
-    citation = _format_citation(source, page_num)
+def _from_doc(doc, score: float | None, method: str) -> RetrievedChunk:
+    meta = doc.metadata or {}
+    source = str(meta.get("source", "unknown"))
+    page_num = int(meta.get("page", 0))
     return RetrievedChunk(
         source=source,
         page_num=page_num,
-        text=text,
+        text=doc.page_content,
         score=score,
-        citation=citation,
+        citation=_citation(source, page_num),
+        method=method,
     )
+
+
+def _distance_to_sim(distance: float) -> float:
+    return 1.0 / (1.0 + float(distance))
+
+
+def _all_docs(vectorstore: Chroma, cap: int = 10_000) -> list:
+    raw = vectorstore._collection.get(include=["documents", "metadatas"], limit=cap)
+    from langchain_core.documents import Document
+
+    docs = []
+    for text, meta in zip(raw.get("documents") or [], raw.get("metadatas") or []):
+        docs.append(Document(page_content=text or "", metadata=meta or {}))
+    return docs
+
+
+def retrieve_similarity(
+    query: str,
+    vectorstore: Chroma,
+    top_k: int = DEFAULT_TOP_K,
+    score_floor: float = SCORE_FLOOR,
+) -> list[RetrievedChunk]:
+    raw = vectorstore.similarity_search_with_score(query, k=top_k)
+    out = []
+    for doc, distance in raw:
+        score = _distance_to_sim(distance)
+        if score < score_floor:
+            continue
+        out.append(_from_doc(doc, score, "similarity"))
+    return out
+
+
+def retrieve_mmr(
+    query: str,
+    vectorstore: Chroma,
+    top_k: int = DEFAULT_TOP_K,
+    lambda_mult: float = MMR_LAMBDA,
+    score_floor: float = SCORE_FLOOR,
+) -> list[RetrievedChunk]:
+    docs = vectorstore.max_marginal_relevance_search(
+        query, k=top_k, fetch_k=max(top_k * 4, 16), lambda_mult=lambda_mult
+    )
+    # MMR API has no scores; approximate with a second similarity pass.
+    scored = {
+        (d.metadata.get("source"), d.metadata.get("page"), d.page_content[:80]): s
+        for d, s in (
+            (doc, _distance_to_sim(dist))
+            for doc, dist in vectorstore.similarity_search_with_score(query, k=max(top_k * 4, 16))
+        )
+    }
+    out = []
+    for doc in docs:
+        key = (doc.metadata.get("source"), doc.metadata.get("page"), doc.page_content[:80])
+        score = scored.get(key)
+        if score is not None and score < score_floor:
+            continue
+        out.append(_from_doc(doc, score, "mmr"))
+    return out
+
+
+def retrieve_hybrid(
+    query: str,
+    vectorstore: Chroma,
+    top_k: int = DEFAULT_TOP_K,
+    vector_weight: float = HYBRID_VECTOR_WEIGHT,
+    score_floor: float = SCORE_FLOOR,
+) -> list[RetrievedChunk]:
+    docs = _all_docs(vectorstore)
+    if not docs:
+        return []
+
+    tokenized = [d.page_content.lower().split() for d in docs]
+    bm25 = BM25Okapi(tokenized)
+    bm25_raw = bm25.get_scores(query.lower().split())
+    bm25_max = max(float(x) for x in bm25_raw) or 1.0
+    bm25_norm = [float(x) / bm25_max for x in bm25_raw]
+
+    # Vector scores for a wider pool, then merge.
+    vec_hits = vectorstore.similarity_search_with_score(query, k=min(len(docs), max(top_k * 8, 24)))
+    vec_map: dict[tuple, float] = {}
+    for doc, dist in vec_hits:
+        key = (doc.metadata.get("source"), doc.metadata.get("page"), doc.page_content[:120])
+        vec_map[key] = _distance_to_sim(dist)
+
+    ranked: list[tuple[float, object]] = []
+    for doc, bscore in zip(docs, bm25_norm):
+        key = (doc.metadata.get("source"), doc.metadata.get("page"), doc.page_content[:120])
+        vscore = vec_map.get(key, 0.0)
+        combined = vector_weight * vscore + (1.0 - vector_weight) * bscore
+        ranked.append((combined, doc))
+
+    ranked.sort(key=lambda x: x[0], reverse=True)
+    out = []
+    for score, doc in ranked:
+        if score < score_floor:
+            continue
+        out.append(_from_doc(doc, score, "hybrid"))
+        if len(out) >= top_k:
+            break
+    return out
 
 
 def retrieve(
@@ -68,43 +150,28 @@ def retrieve(
     vectorstore: Chroma | None = None,
     db_path: str | None = None,
     top_k: int = DEFAULT_TOP_K,
+    method: str = "hybrid",
+    score_floor: float = SCORE_FLOOR,
 ) -> list[RetrievedChunk]:
-    """Retrieve the top-K most similar chunks for a query.
-
-    Args:
-        query: The user's question (natural language).
-        vectorstore: An existing Chroma instance (optional — saves a
-                     DB load if you already have one).
-        db_path: Path to the persistent DB (used only if vectorstore
-                 is None).
-        top_k: Number of chunks to retrieve (default 4).
-
-    Returns:
-        List of RetrievedChunk objects, sorted by relevance (most
-        similar first). Each chunk has source, page_num, text, score,
-        and a pre-formatted citation string.
-
-    Raises:
-        ValueError: If neither vectorstore nor db_path is provided.
-    """
-    if vectorstore is None and db_path is None:
-        raise ValueError("Must provide either vectorstore or db_path")
-
     if vectorstore is None:
+        if db_path is None:
+            db_path = DEFAULT_DB_PATH
+        from pathlib import Path
+
+        if not Path(db_path).exists():
+            return []
         vectorstore = get_vectorstore(db_path=db_path)
 
-    # similarity_search_with_score returns (Document, float) tuples
-    # The score is a distance (lower = more similar) in Chroma's default mode
-    raw_results = vectorstore.similarity_search_with_score(query, k=top_k)
-
-    retrieved: list[RetrievedChunk] = []
-    for doc, distance in raw_results:
-        # Convert distance to similarity score (1 / (1 + distance))
-        # This gives a 0-1 score where 1 = identical
-        score = 1.0 / (1.0 + distance)
-        retrieved.append(_doc_to_retrieved(doc, score=score))
-
-    return retrieved
+    method = (method or "hybrid").lower()
+    if method == "mmr":
+        return retrieve_mmr(vectorstore=vectorstore, query=query, top_k=top_k, score_floor=score_floor)
+    if method == "similarity":
+        return retrieve_similarity(
+            vectorstore=vectorstore, query=query, top_k=top_k, score_floor=score_floor
+        )
+    return retrieve_hybrid(
+        vectorstore=vectorstore, query=query, top_k=top_k, score_floor=score_floor
+    )
 
 
 def retrieve_with_context(
@@ -112,80 +179,18 @@ def retrieve_with_context(
     vectorstore: Chroma | None = None,
     db_path: str | None = None,
     top_k: int = DEFAULT_TOP_K,
+    method: str = "hybrid",
+    score_floor: float = SCORE_FLOOR,
 ) -> tuple[list[RetrievedChunk], str]:
-    """Retrieve chunks AND format them as a context string for the LLM.
-
-    The context string is what gets passed to the LLM as background
-    information. It includes the chunk text and citation for each
-    retrieved chunk, numbered for easy reference:
-
-        [1] resume.pdf, p.3
-        <chunk text>
-
-        [2] report.pdf, p.7
-        <chunk text>
-
-    Args:
-        Same as retrieve().
-
-    Returns:
-        Tuple of (retrieved_chunks, context_string).
-    """
-    chunks = retrieve(query, vectorstore, db_path, top_k)
-
+    chunks = retrieve(
+        query,
+        vectorstore=vectorstore,
+        db_path=db_path,
+        top_k=top_k,
+        method=method,
+        score_floor=score_floor,
+    )
     if not chunks:
         return [], "No relevant context found."
-
-    context_parts = []
-    for i, chunk in enumerate(chunks, 1):
-        context_parts.append(f"[{i}] {chunk.citation}\n{chunk.text}")
-    context_string = "\n\n".join(context_parts)
-
-    return chunks, context_string
-
-
-# --- Quick self-test when run directly ---
-if __name__ == "__main__":
-    from src.chunker import Chunk
-    from src.vectorstore import ingest_chunks, clear_vectorstore
-
-    print("Testing retriever module...\n")
-
-    # Use a temporary DB for testing
-    test_db = "./chroma_db_test"
-    clear_vectorstore(db_path=test_db)
-
-    # Ingest test chunks
-    test_chunks = [
-        Chunk("python_basics.pdf", 1,
-              "Python is a high-level programming language known for its readable syntax.", 0),
-        Chunk("python_basics.pdf", 2,
-              "Lists in Python are ordered, mutable, and can hold mixed data types.", 0),
-        Chunk("sql_basics.pdf", 1,
-              "SQL is used to manage relational databases. SELECT retrieves data from tables.", 0),
-        Chunk("sql_basics.pdf", 2,
-              "JOINs combine rows from two or more tables based on a related column.", 0),
-    ]
-    ingest_chunks(test_chunks, db_path=test_db)
-
-    # Test retrieve()
-    print("\n--- retrieve() ---")
-    query = "How do I join tables in SQL?"
-    print(f"Query: {query}\n")
-    results = retrieve(query, db_path=test_db, top_k=2)
-    for i, chunk in enumerate(results, 1):
-        print(f"  {i}. [{chunk.citation}] (score: {chunk.score:.4f})")
-        preview = chunk.text[:100].replace("\n", " ")
-        print(f"     {preview}...")
-
-    # Test retrieve_with_context()
-    print("\n--- retrieve_with_context() ---")
-    chunks, context = retrieve_with_context(query, db_path=test_db, top_k=2)
-    print("Context string for LLM:")
-    print("-" * 60)
-    print(context)
-    print("-" * 60)
-
-    # Cleanup
-    clear_vectorstore(db_path=test_db)
-    print("\n✓ Test complete.")
+    parts = [f"[{i}] {c.citation}\n{c.text}" for i, c in enumerate(chunks, 1)]
+    return chunks, "\n\n".join(parts)
