@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}<title>Nurses</title>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Nurses</h1>
+    <a class="btn btn-success" href="{% url 'nurse_create' %}">Add nurse</a>
+</div>
+<form method="get" class="mb-3 d-flex gap-2 flex-wrap">
+    <select class="form-select" style="max-width: 200px;" name="department" onchange="this.form.submit()">
+        <option value="">All departments</option>
+        {% for value, label in departments %}
+        <option value="{{ value }}" {% if department == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <select class="form-select" style="max-width: 220px;" name="shift" onchange="this.form.submit()">
+        <option value="">All shifts</option>
+        {% for value, label in shifts %}
+        <option value="{{ value }}" {% if shift == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+</form>
+<div class="row">
+    {% for n in nurses %}
+    <div class="col-md-4 mb-3">
+        <div class="card p-3">
+            {% if n.profile_picture %}
+            <img src="{{ n.profile_picture.url }}" alt="" class="nurse-img mb-2">
+            {% endif %}
+            <h5>{{ n.name }}</h5>
+            <p class="mb-1">{{ n.get_gender_display }} · {{ n.department }}</p>
+            <p class="mb-1">{{ n.shift }}</p>
+            <p class="mb-1">Care: {{ n.care }} · {{ n.experience }} yrs</p>
+            <p class="mb-3">{{ n.email }}</p>
+            <a class="btn btn-sm btn-primary" href="{% url 'nurse_update' n.pk %}">Edit</a>
+            <a class="btn btn-sm btn-danger" href="{% url 'nurse_delete' n.pk %}">Delete</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>No nurses in this filter.</p>
+    {% endfor %}
+</div>
+{% endblock %}

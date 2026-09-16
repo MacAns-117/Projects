@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Admin Panel</title>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <h1 class="mb-3">Admin panel</h1>
+    <p>{{ counts.pending }} pending · {{ counts.approved }} approved · {{ counts.rejected }} rejected</p>
+    <form method="get" class="mb-3">
+        <select name="status" class="form-select w-auto d-inline" onchange="this.form.submit()">
+            <option value="pending" {% if status == "pending" %}selected{% endif %}>Pending</option>
+            <option value="approved" {% if status == "approved" %}selected{% endif %}>Approved</option>
+            <option value="rejected" {% if status == "rejected" %}selected{% endif %}>Rejected</option>
+            <option value="all" {% if status == "all" %}selected{% endif %}>All</option>
+        </select>
+    </form>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr>
+                    <td>{{ req.name }}</td>
+                    <td>{{ req.phone }}</td>
+                    <td>{{ req.email }}</td>
+                    <td>{{ req.location }}</td>
+                    <td>{{ req.message }}</td>
+                    <td>{{ req.get_status_display }}</td>
+                    <td>
+                        {% if req.status == "pending" %}
+                        <div class="d-flex gap-2">
+                            <form action="{% url 'approved' req.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                            <form action="{% url 'rejected' req.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7">No requests in this filter.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

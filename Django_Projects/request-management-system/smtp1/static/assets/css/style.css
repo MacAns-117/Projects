@@ -1,0 +1,66 @@
+body {
+    background: linear-gradient(to right, #913174, #6DD5FA); /* Gradient from blue to light blue */
+}
+/* Custom CSS for Request Form */
+/* Custom CSS for Request Form */
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #333;
+    font-size: 24px;
+}
+
+form {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mb-4 {
+    margin-bottom: 2rem !important;
+}
+
+label {
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+
+
+
+/* Style for the footer */
+.footer {
+    background-color: #9c9c22; /* Change background color to gold */
+    color: #0f0f0f; /* Dark gray text color */
+    bottom: 0; /* Align the footer to the bottom of the viewport */
+    width: 100%; /* Full width */
+    padding: 20px 0; /* Add padding to top and bottom */
+    text-align: center; /* Center align text */
+}
+
+/* Style for the container inside the footer */
+.footer .container {
+    max-width: 960px; /* Limit the maximum width of the container */
+    margin: 0 auto; /* Center align container */
+}
+
+/* Style for the copyright text */
+.footer span {
+    font-size: 14px; /* Font size */
+}

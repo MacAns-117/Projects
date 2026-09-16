@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}<title>Patients</title>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Patients</h1>
+    <a class="btn btn-success" href="{% url 'patient_create' %}">Add patient</a>
+</div>
+<form method="get" class="mb-3 d-flex gap-2">
+    <input class="form-control" style="max-width: 240px;" name="q" value="{{ q }}" placeholder="ID or name">
+    <button class="btn btn-outline-secondary" type="submit">Filter</button>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th><th>Name</th><th>Blood</th><th>Age</th><th>Disease</th><th>Location</th><th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in patients %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.blood_group }}</td>
+            <td>{{ p.age }}</td>
+            <td>{{ p.disease }}</td>
+            <td>{{ p.location }}</td>
+            <td>
+                <a class="btn btn-sm btn-primary" href="{% url 'patient_update' p.pk %}">Edit</a>
+                <a class="btn btn-sm btn-danger" href="{% url 'patient_delete' p.pk %}">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">No patients.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

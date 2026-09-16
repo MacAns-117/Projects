@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}<title>Dashboard</title>{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p>Patients and nurses in one place. Login required for every page.</p>
+<div class="row g-3 mt-2">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3>{{ patient_count }}</h3>
+            <p>Patients</p>
+            <a class="btn btn-primary" href="{% url 'patient_list' %}">Open patients</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3>{{ nurse_count }}</h3>
+            <p>Nurses</p>
+            <a class="btn btn-primary" href="{% url 'nurse_list' %}">Open nurses</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+<form method="POST" action="{% url 'add_task' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="id_task_name" class="form-label">Task Name</label>
+        {{ form.task_name }}
+    </div>
+    <div class="mb-3">
+        <label for="id_description" class="form-label">Description</label>
+        {{ form.description }}
+    </div>
+    <div class="mb-3">
+        <label for="id_status" class="form-label">Status</label>
+        {{ form.status }}
+    </div>
+    <button type="submit" class="btn btn-custom">Add Task</button>
+</form>

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}<title>Delete {{ kind }}</title>{% endblock %}
+{% block content %}
+<h1>Delete {{ kind }}</h1>
+<p>Delete <strong>{{ object }}</strong>?</p>
+<form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Delete</button>
+    <a class="btn btn-link" href="{% if kind == 'patient' %}{% url 'patient_list' %}{% else %}{% url 'nurse_list' %}{% endif %}">Cancel</a>
+</form>
+{% endblock %}
