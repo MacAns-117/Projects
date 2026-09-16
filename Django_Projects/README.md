@@ -1,41 +1,126 @@
-# Django Projects
+<h1>Django Projects</h1>
 
+<p>
+  <img src="https://img.shields.io/badge/projects-3-blue?style=flat-square" alt="3 projects">
+  <img src="https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54" alt="Python">
+  <img src="https://img.shields.io/badge/Django-5.0-092E20?style=flat-square&logo=django&logoColor=white" alt="Django">
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
+</p>
 
-## Authentication App(only login/signup) titled auth folder 
+> Three Django apps — login and CRUD on SQLite on every one, Bootstrap 5 on the pages, console mail on the request app so SMTP is optional.
 
-Developed a Django-based authentication application featuring separate login and signup functionalities for regular users and admin users. Implemented conditional redirection to an admin panel for admin users and a user-specific home page for regular users upon successful login. Enhanced user interface using HTML, CSS, and Bootstrap.
+---
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL)  
-**Skills used:** Web Development, Django, SQL, Frontend Design
+## What's in here
 
+| Folder | What it is | Headline |
+| --- | --- | --- |
+| [`todo`](todo/) | Task list, per user | **6** tests; Bob gets **404** on Alice’s delete |
+| [`smtp1`](smtp1/) | Request form + staff approve/reject | Status is stored (`pending` → `approved` / `rejected`); **5** tests |
+| [`HMS`](HMS/) | Patients **and** nurses in one app | **2** models, one dashboard, **6** tests |
 
-## Request Management System App titled smtp1 folder
+Each folder has its own README with run steps and the test list. `proj_1/` is not a separate app — patients live in `HMS/` with the nurses.
 
-Developed a Request Management System application with a unified login for both normal and admin users, and a signup process for normal users. Upon successful signup, normal users are redirected to the login page. Logged-in normal users can access a request form to submit their requests, which triggers an email notification to the admin via SMTP protocol. Admin users, upon logging in, are presented with a list of pending requests to approve or reject. An email notification is sent to the user informing them whether their request was approved or rejected.
+---
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL), SMTP  
-**Skills used:** Web Development, Django, SQL, Frontend Design, Email Integration
+## Task Manager — `todo`
 
+Sign up, log in, keep a **private** list. Add / edit / delete in Bootstrap modals. Toggle Pending ↔ Completed. Filter by status on View Tasks.
 
-## Hospital Management System-1 App(only CRUD Operations on patient details) titled proj1 folder
+| | |
+| --- | --- |
+| Model | `Task`: name, description, status, **owner**, created_at |
+| Auth | `login_required` on every task page. `LOGIN_URL` is `login`. |
+| Isolation | Home lists `request.user` only. Foreign delete is **404**. |
+| Delete | POST form, not a GET link |
 
-Developed a Hospital Management System application focused on CRUD operations for patient details. Implemented login and signup functionalities for the admin, who, upon successful authentication, is redirected to a list of admitted patients. The admin can perform all CRUD operations—create, update, read, and delete—on the patient list, ensuring efficient management of patient information.
+CRUD + auth. No reminders, no teams, no API.
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL)  
-**Skills used:** Web Development, Django, SQL, Frontend Design
+---
 
+## Request Management — `smtp1`
 
-## Hospital Management System-2 App(only Nurse List details) titled HMS folder
+A user files a request. Staff open `/adminpanel/`, filter pending / approved / rejected, POST approve or reject. Mail goes out.
 
-Developed a Hospital Management System application focused on CRUD operations for nurse details. Implemented login and signup functionalities for the admin, who, upon successful authentication, is redirected to a list of nurses working in the hospital. The admin can view nurse information, add new nurses, update nurse details, and delete nurses who are no longer working in the hospital, ensuring efficient management of nurse records.
+| Role | Can do |
+| --- | --- |
+| Regular user | Sign up, submit a request, see **their** rows |
+| Staff (`is_staff=True`) | Panel + approve / reject |
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL)  
-**Skills used:** Web Development, Django, SQL, Frontend Design
+Approve **writes a status**. Mail defaults to the **console**, so this runs without Gmail. Real SMTP is env vars (`EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`) — not in the repo.
 
+`ServiceRequest`: name, phone, email, location, message, status, owner, timestamps. No SLAs, no attachments.
 
-## Task Manager App titled todo folder
+---
 
-Developed a Task Manager application with admin login functionality. The admin can perform CRUD operations—add, view, update, and delete tasks. A unique feature of this project is the use of Bootstrap Modals for task management, enhancing the user experience by providing a seamless and interactive interface for CRUD operations.
+## Hospital records — `HMS`
 
-**Tools used:** Frontend (HTML, CSS/Bootstrap), Backend (Django Framework, SQL)  
-**Skills used:** Web Development, Django, SQL, Frontend Design, Bootstrap Modals
+Patient details and the nurse list are **one** project. One login, one nav, two models.
+
+| | Patients | Nurses |
+| --- | --- | --- |
+| Fields | name, blood group, age, disease, location | name, gender, department, shift, care, years, certs, phone, email, optional photo |
+| List | filter by id or name | filter by department / shift |
+| Write | add / edit / delete (POST) | add / edit / delete (POST) |
+
+Dashboard shows the two counts. Photo is optional — a missing file does not 500. Pillow is required because of `ImageField`. No wards, no appointments, no billing.
+
+---
+
+## Tech stack across all three
+
+| Layer | Tools |
+| --- | --- |
+| Language | Python 3 |
+| Framework | Django 5.0 |
+| Database | SQLite (`db.sqlite3`, gitignored) |
+| Auth | Django `User` + `login_required` |
+| Forms | Django `ModelForm` / `UserCreationForm` |
+| UI | Bootstrap 5 (CDN) |
+| Mail (`smtp1`) | `console` backend by default; SMTP optional |
+| Images (`HMS`) | Pillow + `MEDIA_ROOT` |
+| Tests | Django `TestCase` — 6 / 5 / 6 |
+
+No MySQL required. No React.
+
+---
+
+## How to run any of them
+
+```bash
+cd todo          # or smtp1 or HMS
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+python manage.py test
+```
+
+`createsuperuser` is optional except on `smtp1`, where staff is how you reach the admin panel.
+
+---
+
+## Layout
+
+```text
+README.md          this file
+todo/              Task Manager
+smtp1/             Request Management
+HMS/               Hospital records (patients + nurses)
+```
+
+Open a folder and follow that child’s README.
+
+---
+
+## Limits
+
+- `SECRET_KEY` is `DJANGO_SECRET_KEY` or a **dev-only** fallback. Do not use the fallback on a public host.
+- Do not commit `db.sqlite3`. Do not commit SMTP passwords.
+- `smtp1` mail is console unless you set env vars. If an older copy had a Gmail app password in `settings.py`, rotate that password.
+- `HMS` photos go in `media/nurse_pics/` (gitignored). Uploaded files are not in git.
+
+---
+
+## License
+
+Code is MIT unless a child README says otherwise. Bootstrap / Boxicons / Font Awesome stay with their CDNs.
