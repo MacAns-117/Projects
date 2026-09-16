@@ -6,6 +6,7 @@ langchain-huggingface==0.1.2
 
 # Vector DB
 chromadb==0.5.20
+langchain-chroma==0.2.2
 
 # Embeddings
 sentence-transformers==3.3.0
