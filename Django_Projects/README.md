@@ -15,9 +15,9 @@
 
 | Folder | What it is | Headline |
 | --- | --- | --- |
-| [`todo`](todo/) | Task list, per user | **6** tests; Bob gets **404** on Alice’s delete |
-| [`smtp1`](smtp1/) | Request form + staff approve/reject | Status is stored (`pending` → `approved` / `rejected`); **5** tests |
-| [`HMS`](HMS/) | Patients **and** nurses in one app | **2** models, one dashboard, **6** tests |
+| [`todo-task-manager/todo`](todo-task-manager/todo/) | Task list, per user | **6** tests; Bob gets **404** on Alice’s delete |
+| [`request-management-system/smtp1`](request-management-system/smtp1/) | Request form + staff approve/reject | Status is stored (`pending` → `approved` / `rejected`); **5** tests |
+| [`hospital-management/HMS`](hospital-management/HMS/) | Patients **and** nurses in one app | **2** models, one dashboard, **6** tests |
 
 Each folder has its own README with run steps and the test list. `proj_1/` is not a separate app — patients live in `HMS/` with the nurses.
 
