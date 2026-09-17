@@ -1,0 +1,159 @@
+{
+  "pandas_rows": [
+    {
+      "id": "q01_row_count",
+      "pandas_ok": true
+    },
+    {
+      "id": "q02_cancel_rate",
+      "pandas_ok": true
+    },
+    {
+      "id": "q03_hotel_cancel",
+      "pandas_ok": true
+    },
+    {
+      "id": "q04_lead_time",
+      "pandas_ok": true
+    },
+    {
+      "id": "q05_bookings_by_month",
+      "pandas_ok": true
+    },
+    {
+      "id": "q06_adr_by_hotel",
+      "pandas_ok": true
+    },
+    {
+      "id": "q07_market_segments",
+      "pandas_ok": true
+    },
+    {
+      "id": "q08_lead_corr",
+      "pandas_ok": true
+    },
+    {
+      "id": "q09_countries",
+      "pandas_ok": true
+    },
+    {
+      "id": "q10_special_requests",
+      "pandas_ok": true
+    },
+    {
+      "id": "q11_repeated",
+      "pandas_ok": true
+    },
+    {
+      "id": "q12_years",
+      "pandas_ok": true
+    },
+    {
+      "id": "q13_booking_changes",
+      "pandas_ok": true
+    },
+    {
+      "id": "q14_deposit",
+      "pandas_ok": true
+    },
+    {
+      "id": "q15_nights",
+      "pandas_ok": true
+    },
+    {
+      "id": "q16_families",
+      "pandas_ok": true
+    },
+    {
+      "id": "q17_wait",
+      "pandas_ok": true
+    },
+    {
+      "id": "q18_customer_adr",
+      "pandas_ok": true
+    },
+    {
+      "id": "q19_busiest_month",
+      "pandas_ok": true
+    },
+    {
+      "id": "q20_capabilities",
+      "pandas_ok": null,
+      "note": "no numeric check"
+    }
+  ],
+  "llm_rows": [],
+  "facts": {
+    "row_count": 87230,
+    "cancel_rate": 27.52,
+    "cancel_by_hotel": {
+      "City Hotel": 30.1,
+      "Resort Hotel": 23.48
+    },
+    "lead_by_cancel": {
+      "canceled": 105.7,
+      "not_canceled": 70.2
+    },
+    "month_top": {
+      "August": 11242
+    },
+    "adr_by_hotel": {
+      "City Hotel": 111.27,
+      "Resort Hotel": 99.06
+    },
+    "top_market": [
+      "Online TA",
+      "Offline TA/TO",
+      "Direct"
+    ],
+    "corr_lead_cancel": 0.1845,
+    "top_countries": [
+      "PRT",
+      "GBR",
+      "FRA",
+      "ESP",
+      "DEU"
+    ],
+    "special_cancel": {
+      "0": 33.3,
+      "1": 22.4
+    },
+    "repeat_cancel": {
+      "0": 28.32,
+      "1": 7.73
+    },
+    "years": {
+      "2015": 13284,
+      "2016": 42313,
+      "2017": 31633
+    },
+    "booking_changes_mean": 0.268,
+    "deposit_cancel": {
+      "No Deposit": 26.72,
+      "Non Refund": 94.7,
+      "Refundable": 24.3
+    },
+    "nights": {
+      "weekend": 1.005,
+      "week": 2.624
+    },
+    "families": 9103,
+    "wait_mean": 0.746,
+    "adr_by_customer": {
+      "Contract": 92.87,
+      "Group": 84.82,
+      "Transient": 110.3,
+      "Transient-Party": 87.92
+    },
+    "busiest_month": "August"
+  },
+  "summary": {
+    "pandas_pass": 19,
+    "pandas_checked": 19,
+    "row_count": 87230,
+    "cancel_rate": 27.52,
+    "lead_canceled": 105.7,
+    "lead_stayed": 70.2,
+    "busiest_month": "August"
+  }
+}

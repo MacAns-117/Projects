@@ -1,0 +1,162 @@
+[
+  {
+    "id": "q01_row_count",
+    "question": "How many rows are in the table after cleaning?",
+    "intent": "data",
+    "check": "row_count",
+    "expected": 87230,
+    "answer_contains": ["87230", "87,230"]
+  },
+  {
+    "id": "q02_cancel_rate",
+    "question": "What is the overall cancellation rate?",
+    "intent": "data",
+    "check": "cancel_rate",
+    "expected": 27.52,
+    "answer_contains": ["27.5"]
+  },
+  {
+    "id": "q03_hotel_cancel",
+    "question": "Compare cancellation rates between City Hotel and Resort Hotel.",
+    "intent": "data",
+    "check": "cancel_by_hotel",
+    "expected": {"City Hotel": 30.1, "Resort Hotel": 23.48},
+    "answer_contains": ["City", "Resort"]
+  },
+  {
+    "id": "q04_lead_time",
+    "question": "What is the average lead time for canceled vs non-canceled bookings?",
+    "intent": "data",
+    "check": "lead_by_cancel",
+    "expected": {"canceled": 105.7, "not_canceled": 70.2},
+    "answer_contains": ["105", "70"]
+  },
+  {
+    "id": "q05_bookings_by_month",
+    "question": "Show a bar chart of bookings by arrival month.",
+    "intent": "viz",
+    "check": "month_top",
+    "expected": {"August": 11242},
+    "answer_contains": ["August", "chart"]
+  },
+  {
+    "id": "q06_adr_by_hotel",
+    "question": "What is the average ADR for each hotel type?",
+    "intent": "data",
+    "check": "adr_by_hotel",
+    "expected": {"City Hotel": 111.27, "Resort Hotel": 99.06},
+    "answer_contains": ["111", "99"]
+  },
+  {
+    "id": "q07_market_segments",
+    "question": "What are the top 3 market segments by booking count?",
+    "intent": "data",
+    "check": "top_market",
+    "expected": ["Online TA", "Offline TA/TO", "Direct"],
+    "answer_contains": ["Online TA"]
+  },
+  {
+    "id": "q08_lead_corr",
+    "question": "Is lead time correlated with cancellations?",
+    "intent": "data",
+    "check": "corr_lead_cancel",
+    "expected": 0.1845,
+    "answer_contains": ["0.18"]
+  },
+  {
+    "id": "q09_countries",
+    "question": "Which top 5 countries have the most bookings?",
+    "intent": "data",
+    "check": "top_countries",
+    "expected": ["PRT", "GBR", "FRA", "ESP", "DEU"],
+    "answer_contains": ["PRT"]
+  },
+  {
+    "id": "q10_special_requests",
+    "question": "How does cancellation rate change with number of special requests?",
+    "intent": "data",
+    "check": "special_cancel",
+    "expected": {"0": 33.3, "1": 22.4},
+    "answer_contains": ["special"]
+  },
+  {
+    "id": "q11_repeated",
+    "question": "Do repeated guests cancel less than new guests?",
+    "intent": "data",
+    "check": "repeat_cancel",
+    "expected": {"0": 28.32, "1": 7.73},
+    "answer_contains": ["repeat"]
+  },
+  {
+    "id": "q12_years",
+    "question": "Show the trend of booking volume by arrival year.",
+    "intent": "viz",
+    "check": "years",
+    "expected": {"2015": 13284, "2016": 42313, "2017": 31633},
+    "answer_contains": ["2016"]
+  },
+  {
+    "id": "q13_booking_changes",
+    "question": "What is the average number of booking changes?",
+    "intent": "data",
+    "check": "booking_changes_mean",
+    "expected": 0.268,
+    "answer_contains": ["0.27", "0.268"]
+  },
+  {
+    "id": "q14_deposit",
+    "question": "How does deposit type relate to cancellation rate?",
+    "intent": "data",
+    "check": "deposit_cancel",
+    "expected": {"Non Refund": 94.7, "No Deposit": 26.72},
+    "answer_contains": ["Non Refund"]
+  },
+  {
+    "id": "q15_nights",
+    "question": "Do guests stay more weekend nights or week nights on average?",
+    "intent": "data",
+    "check": "nights",
+    "expected": {"weekend": 1.005, "week": 2.624},
+    "answer_contains": ["week"]
+  },
+  {
+    "id": "q16_families",
+    "question": "How many bookings include children or babies?",
+    "intent": "data",
+    "check": "families",
+    "expected": 9103,
+    "answer_contains": ["9103"]
+  },
+  {
+    "id": "q17_wait",
+    "question": "What is the average days in waiting list?",
+    "intent": "data",
+    "check": "wait_mean",
+    "expected": 0.746,
+    "answer_contains": ["0.75", "0.746", "waiting"]
+  },
+  {
+    "id": "q18_customer_adr",
+    "question": "Compare average ADR across customer types and show a chart.",
+    "intent": "both",
+    "check": "adr_by_customer",
+    "expected": {"Transient": 110.3, "Contract": 92.87},
+    "answer_contains": ["Transient"]
+  },
+  {
+    "id": "q19_busiest_month",
+    "question": "Which arrival month has the most bookings?",
+    "intent": "data",
+    "check": "busiest_month",
+    "expected": "August",
+    "answer_contains": ["August"]
+  },
+  {
+    "id": "q20_capabilities",
+    "question": "What can you do?",
+    "intent": "general",
+    "check": null,
+    "expected": null,
+    "answer_contains": ["csv", "table", "chart", "sql"]
+  }
+]

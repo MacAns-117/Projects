@@ -1,0 +1,11 @@
+region,product,units,price
+West,Widget,10,12.5
+West,Gadget,4,40.0
+East,Widget,7,12.5
+East,Gadget,12,40.0
+North,Widget,3,12.5
+North,Gadget,6,40.0
+South,Widget,8,12.5
+South,Gadget,2,40.0
+West,Widget,5,12.5
+East,Widget,9,12.5
