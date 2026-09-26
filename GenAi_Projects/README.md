@@ -113,6 +113,8 @@ python -m pytest tests/ -q</code></pre>
 
 <p>Stack: LangGraph, pandas, DuckDB, Plotly, Groq, Streamlit, FastAPI.</p>
 
+<p>Live demo: <a href="https://projects-wktkeuxu6u3nqmz9vdyith.streamlit.app/">projects-wtvyr5raavdyaknbh4jml6y.streamlit.app</a></p>
+
 <hr>
 
 <h2>AI Research Agent</h2>
@@ -143,6 +145,9 @@ RESEARCH_DEV=1 python -m pytest tests/ -q
 python -m eval.run_eval --mock</code></pre>
 
 <p>Stack: LangGraph, LangChain, Tavily, trafilatura, Groq, Streamlit, FastAPI.</p>
+
+<p>Live demo: <a href="https://projects-wktkeuxu6u3nqmz9vdyith.streamlit.app/">projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app</a></p>
+
 
 <hr>
 
