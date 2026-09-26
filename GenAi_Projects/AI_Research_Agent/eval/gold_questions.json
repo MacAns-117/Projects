@@ -1,0 +1,77 @@
+[
+  {
+    "id": "r01_langgraph",
+    "question": "What is LangGraph and how does it differ from LangChain?",
+    "expected_phrases": ["langgraph", "state", "graph", "langchain"]
+  },
+  {
+    "id": "r02_rag_eval",
+    "question": "What are the latest advances in RAG evaluation?",
+    "expected_phrases": ["rag", "eval", "metric", "faithfulness", "retrieval"]
+  },
+  {
+    "id": "r03_ragas",
+    "question": "What is the RAGAS framework?",
+    "expected_phrases": ["ragas", "faithfulness", "answer relevance", "context"]
+  },
+  {
+    "id": "r04_vector_db",
+    "question": "Compare Chroma, Pinecone, and FAISS for vector search.",
+    "expected_phrases": ["chroma", "pinecone", "faiss", "vector"]
+  },
+  {
+    "id": "r05_hybrid_search",
+    "question": "What is hybrid search in RAG systems?",
+    "expected_phrases": ["hybrid", "bm25", "vector", "dense", "sparse"]
+  },
+  {
+    "id": "r06_agents",
+    "question": "What are LLM agents and how do they work?",
+    "expected_phrases": ["agent", "tool", "reason", "act", "llm"]
+  },
+  {
+    "id": "r07_duckdb",
+    "question": "What is DuckDB and what is it used for?",
+    "expected_phrases": ["duckdb", "sql", "analy", "olap", "embed"]
+  },
+  {
+    "id": "r08_finetuning",
+    "question": "What is LoRA fine-tuning for large language models?",
+    "expected_phrases": ["lora", "fine", "tun", "adapt", "param"]
+  },
+  {
+    "id": "r09_streamlit",
+    "question": "How to deploy a Streamlit app to the cloud?",
+    "expected_phrases": ["streamlit", "deploy", "cloud", "app"]
+  },
+  {
+    "id": "r10_ocr",
+    "question": "What is Tesseract OCR and how is it used?",
+    "expected_phrases": ["tesseract", "ocr", "text", "image"]
+  },
+  {
+    "id": "r11_mlops",
+    "question": "What is MLOps and why is it important?",
+    "expected_phrases": ["mlops", "deploy", "monitor", "lifecycle", "model"]
+  },
+  {
+    "id": "r12_ollama",
+    "question": "How to run local LLMs with Ollama?",
+    "expected_phrases": ["ollama", "local", "model", "run", "llm"]
+  },
+  {
+    "id": "r13_tavily",
+    "question": "What is Tavily API and how is it used in AI agents?",
+    "expected_phrases": ["tavily", "search", "agent", "api"]
+  },
+  {
+    "id": "r14_ci_cd",
+    "question": "How to set up CI/CD for Python projects with GitHub Actions?",
+    "expected_phrases": ["ci", "cd", "github", "action", "test", "deploy"]
+  },
+  {
+    "id": "r15_docker",
+    "question": "How to Dockerize a Python FastAPI application?",
+    "expected_phrases": ["docker", "fastapi", "container", "image", "python"]
+  }
+]
