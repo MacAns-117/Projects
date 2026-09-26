@@ -1,7 +1,7 @@
 <h1>GenAI Projects</h1>
 
 <p>
-  <img src="https://img.shields.io/badge/projects-2-blue?style=flat-square" alt="2 projects">
+  <img src="https://img.shields.io/badge/projects-3-blue?style=flat-square" alt="3 projects">
   <img src="https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54" alt="Python">
   <img src="https://img.shields.io/badge/langchain-1C3C3C?style=flat-square&logo=langchain&logoColor=white" alt="LangChain">
   <img src="https://img.shields.io/badge/langgraph-1A1A2E?style=flat-square&logo=langchain&logoColor=white" alt="LangGraph">
@@ -11,13 +11,13 @@
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
 </p>
 
-<blockquote><em>Two GenAI apps — PDF question-answering with citations, and a LangGraph CSV analyst. Each folder has its own README with numbers and how to run it.</em></blockquote>
+<blockquote><em>Three GenAI apps — PDF question-answering with citations, a LangGraph CSV analyst, and a web research agent that writes a cited report. Each folder has its own README with numbers and how to run it.</em></blockquote>
 
 <hr>
 
 <h2>What's in here</h2>
 
-<p>Two small projects I keep in one place:</p>
+<p>Three small projects I keep in one place:</p>
 
 <table>
   <thead>
@@ -38,10 +38,15 @@
       <td>Ask questions over one CSV</td>
       <td>Hotel sample <strong>87,230</strong> rows, pandas gold <strong>19/19</strong></td>
     </tr>
+    <tr>
+      <td><a href="AI_Research_Agent/"><code>AI_Research_Agent</code></a></td>
+      <td>Search the web and write a cited report</td>
+      <td>pytest <strong>30 passed</strong>; live web eval not run</td>
+    </tr>
   </tbody>
 </table>
 
-<p>Each folder has its own README with numbers, eval, and how to run it. Both need a Groq key for chat; retrieval/pandas eval does not.</p>
+<p>Each folder has its own README with numbers, eval, and how to run it. All three need a Groq key for chat. RAG retrieval eval and the CSV pandas eval do not. The research-agent unit tests do not either. Its live web run does, and that run is not in this repo.</p>
 
 <hr>
 
@@ -110,7 +115,38 @@ python -m pytest tests/ -q</code></pre>
 
 <hr>
 
-<h2>Tech stack across both</h2>
+<h2>AI Research Agent</h2>
+
+<p>Ask a question. LangGraph runs one straight line: planner writes 3–5 search queries, the searcher calls Tavily and reads the page, the synthesizer compares the pages, and the report writer cites them as [1], [2]. There is no second search if the first pass is thin.</p>
+
+<p>Streamlit keeps the earlier chat and sends it in as context, so a follow-up can use the last report. The API is the same graph with an empty context. It binds to <code>127.0.0.1</code> and wants an <code>X-API-Token</code> unless <code>RESEARCH_DEV=1</code>.</p>
+
+<table>
+  <thead>
+    <tr><th>Check</th><th>Result</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>RESEARCH_DEV=1 pytest tests/ -q</code></td><td><strong>30 passed</strong></td></tr>
+    <tr><td><code>python -m eval.run_eval --mock</code></td><td><strong>15/15</strong> scorer smoke</td></tr>
+    <tr><td>Live 15-question web run</td><td>Not run</td></tr>
+  </tbody>
+</table>
+
+<p>The 15/15 check only proves the scorer and the gold file load. It is not a web-accuracy percent. The live command spends Groq and Tavily calls (about 30–60 minutes). Until you run it, do not quote one.</p>
+
+<pre><code>cd AI_Research_Agent
+python3.11 -m venv .venv && source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env          # GROQ_API_KEY, TAVILY_API_KEY
+streamlit run app.py
+RESEARCH_DEV=1 python -m pytest tests/ -q
+python -m eval.run_eval --mock</code></pre>
+
+<p>Stack: LangGraph, LangChain, Tavily, trafilatura, Groq, Streamlit, FastAPI.</p>
+
+<hr>
+
+<h2>Tech stack across all three</h2>
 
 <table>
   <thead>
@@ -119,11 +155,12 @@ python -m pytest tests/ -q</code></pre>
   <tbody>
     <tr><td>Language</td><td>Python 3.11</td></tr>
     <tr><td>LLM</td><td>Groq <code>openai/gpt-oss-120b</code></td></tr>
-    <tr><td>Orchestration</td><td>LangChain (RAG) · LangGraph (CSV)</td></tr>
+    <tr><td>Orchestration</td><td>LangChain (RAG) · LangGraph (CSV, research agent)</td></tr>
     <tr><td>Unstructured</td><td>pdfplumber, Chroma, MiniLM, BM25, Tesseract</td></tr>
     <tr><td>Structured</td><td>pandas, DuckDB, Plotly</td></tr>
+    <tr><td>Web research</td><td>Tavily, trafilatura</td></tr>
     <tr><td>UI / API</td><td>Streamlit, FastAPI</td></tr>
-    <tr><td>Eval / tests</td><td>gold JSON + pytest (no key for retrieval/pandas eval)</td></tr>
+    <tr><td>Eval / tests</td><td>gold JSON + pytest. Research live eval is paid and was not run here.</td></tr>
   </tbody>
 </table>
 
@@ -133,7 +170,8 @@ python -m pytest tests/ -q</code></pre>
 
 <pre><code>README.md                         this file
 Rag_Document_QA/                  PDF Q&A + citations
-CSV_Insights_Assistant/           LangGraph CSV analyst</code></pre>
+CSV_Insights_Assistant/           LangGraph CSV analyst
+AI_Research_Agent/                web research + cited report</code></pre>
 
 <p>Open a folder and use that README to run it. This file is only the index.</p>
 
@@ -141,4 +179,4 @@ CSV_Insights_Assistant/           LangGraph CSV analyst</code></pre>
 
 <h2>License</h2>
 
-<p>Code is MIT unless a child README says otherwise. PDFs are public arXiv papers. Hotel rows: Antonio, Almeida & Nunes, Scientific Data (2019) — see each <code>data/README.md</code>.</p>
+<p>Code is MIT unless a child README says otherwise. PDFs are public arXiv papers. Hotel rows: Antonio, Almeida & Nunes, Scientific Data (2019) — see each <code>data/README.md</code>. The research agent ships no dataset. Tavily and Groq are their own services.</p>
