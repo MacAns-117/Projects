@@ -23,6 +23,12 @@
 
 <hr>
 
+<h2>Live Demo</h2>
+
+<p>🔗 <strong><a href="https://projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app/">projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app</a></strong></p>
+
+<p>Try it now — upload any PDF (text-based or scanned) and ask questions. No login required.</p>
+
 <h2>What it does</h2>
 
 <p>The graph is one straight line. It does not search again if the first pass is thin.</p>
