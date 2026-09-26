@@ -24,6 +24,12 @@
 
 <hr>
 
+<h2>Live Demo</h2>
+
+<p>🔗 <strong><a href="https://portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app/">portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app</a></strong></p>
+
+<p>Try it now — upload any PDF (text-based or scanned) and ask questions. No login required.</p>
+
 <h2>What it does</h2>
 
 <ul>
