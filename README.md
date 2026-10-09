@@ -81,7 +81,7 @@
       <td>Peak 1,443 engaged · −17.3% by 25 Aug</td>
     </tr>
     <tr>
-      <td><a href="./Data_Analytics_Projects/Playstore_Apps_Analysis_%26_Visualization/"><strong>Playstore Apps Analysis</strong></a></td>
+      <td><a href="./Data_Analytics_Projects/Playstore%20Apps%20Analysis%20%26%20Visualization/"><strong>Playstore Apps Analysis</strong></a></td>
       <td>14 assigned SQL questions on 9,648 apps</td>
       <td>GAME installs 13.9B (bucket floors) · revenue $291M</td>
     </tr>
