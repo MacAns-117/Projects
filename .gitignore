@@ -105,3 +105,5 @@ data/external/
 # =====================
 .streamlit/
 .streamlit/secrets.toml
+# Full arXiv PDFs for RAG eval (download per data/README.md; not for CI)
+GenAi_Projects/Rag_Document_QA/data/arxiv_pdfs/

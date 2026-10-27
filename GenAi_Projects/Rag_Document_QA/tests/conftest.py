@@ -6,6 +6,10 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+# Keep unit tests fast/deterministic; opt in with use_reranker=True per test.
+import os
+os.environ.setdefault("RAG_RERANK", "0")
+
 from src.chunker import Chunk
 
 
