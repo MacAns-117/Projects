@@ -205,7 +205,14 @@ def write_results(eval_data: dict) -> None:
 
 
 def _has_api_keys() -> bool:
-    return bool(os.getenv("GROQ_API_KEY")) and bool(os.getenv("TAVILY_API_KEY"))
+    """Tavily key plus a usable LLM (Groq key, or LLM_PROVIDER=openai_compatible)."""
+    from src.llm import validate as validate_llm
+
+    try:
+        validate_llm()
+    except ValueError:
+        return False
+    return bool(os.getenv("TAVILY_API_KEY"))
 
 
 def main() -> None:
@@ -225,7 +232,8 @@ def main() -> None:
 
     if not _has_api_keys():
         print(
-            "Skipping live eval: GROQ_API_KEY and/or TAVILY_API_KEY not set.\n"
+            "Skipping live eval: TAVILY_API_KEY not set, or no LLM configured "
+            "(GROQ_API_KEY, or LLM_PROVIDER=openai_compatible + LLM_MODEL).\n"
             "Use --mock to smoke the scorer, or set keys for a live (paid) run."
         )
         return

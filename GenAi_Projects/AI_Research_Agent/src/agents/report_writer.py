@@ -9,9 +9,9 @@ citations. This is the final output the user sees.
 from __future__ import annotations
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_groq import ChatGroq
+from langchain_core.language_models import BaseChatModel
 
-from src.config import LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS
+from src.llm import get_llm, strip_reasoning
 
 
 REPORT_PROMPT = """You are a research report writer.
@@ -60,21 +60,17 @@ Sources:
 Report:"""
 
 
-def create_report_writer(llm: ChatGroq | None = None):
+def create_report_writer(llm: BaseChatModel | None = None):
     """Create a report writer chain.
 
     Args:
-        llm: An existing ChatGroq instance (optional — saves init time).
+        llm: An existing chat model (Groq or OpenAI-compatible) (optional — saves init time).
 
     Returns:
         A runnable chain that takes question, synthesis, and sources.
     """
     if llm is None:
-        llm = ChatGroq(
-            model=LLM_MODEL,
-            temperature=LLM_TEMPERATURE,
-            max_tokens=LLM_MAX_TOKENS,
-        )
+        llm = get_llm()
 
     prompt = ChatPromptTemplate.from_template(REPORT_PROMPT)
     chain = prompt | llm
@@ -85,7 +81,7 @@ def write_report(
     question: str,
     synthesis: str,
     sources_text: str,
-    llm: ChatGroq | None = None,
+    llm: BaseChatModel | None = None,
     context: str = "",
 ) -> str:
     """Generate a structured research report.
@@ -94,7 +90,7 @@ def write_report(
         question: The user's original research question.
         synthesis: The structured synthesis from the Synthesizer agent.
         sources_text: Formatted source list with URLs (from Searcher).
-        llm: An existing ChatGroq instance (optional).
+        llm: An existing chat model (Groq or OpenAI-compatible) (optional).
         context: Optional prior conversation context for follow-ups.
 
     Returns:
@@ -110,7 +106,7 @@ def write_report(
         "sources": sources_text,
         "context": context or "(none)",
     })
-    return response.content
+    return strip_reasoning(response.content)
 
 
 # --- Quick self-test when run directly ---

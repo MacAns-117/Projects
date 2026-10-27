@@ -1,9 +1,18 @@
 """Lightweight faithfulness / groundedness judge (LLM-as-judge).
 
-Works against any OpenAI-compatible chat endpoint via env:
+Works against any OpenAI-compatible chat endpoint. By default it reuses the
+app's own LLM settings (see src/llm.py), so one set of env vars drives both
+answer generation and judging:
+
+  LLM_PROVIDER=groq (default)   judge = Groq's OpenAI-compatible endpoint,
+                                GROQ_API_KEY, LLM_MODEL or openai/gpt-oss-120b
+  LLM_PROVIDER=openai_compatible
+                                judge = LLM_BASE_URL / LLM_API_KEY / LLM_MODEL
+
+Optional judge-only overrides (e.g. local generation, stronger hosted judge):
   OPENAI_BASE_URL   e.g. https://api.groq.com/openai/v1  or http://127.0.0.1:8080/v1
-  OPENAI_API_KEY    bearer token (Groq key, or any string for local llama.cpp)
-  JUDGE_MODEL       model id (default: same as LLM_MODEL / openai/gpt-oss-120b)
+  OPENAI_API_KEY    bearer token for OPENAI_BASE_URL
+  JUDGE_MODEL       judge model id
 
 Does not call paid APIs from CI. Pass a ``judge_fn`` in tests to mock.
 """
@@ -13,8 +22,8 @@ from __future__ import annotations
 import json
 import os
 import re
-from dataclasses import dataclass
-from typing import Callable, Iterable
+from dataclasses import dataclass, field
+from typing import Callable, Iterable, Mapping
 
 from src.chain import REFUSAL
 
@@ -98,25 +107,70 @@ def parse_judge_json(raw: str) -> tuple[bool, str]:
     return grounded, reason
 
 
+GROQ_OPENAI_BASE_URL = "https://api.groq.com/openai/v1"
+JUDGE_DEFAULT_MAX_TOKENS = 256
+
+
+@dataclass(frozen=True)
+class JudgeSettings:
+    base_url: str
+    model: str
+    api_key: str = field(repr=False)
+    max_tokens: int = JUDGE_DEFAULT_MAX_TOKENS
+
+
+def resolve_judge_settings(env: Mapping[str, str] | None = None) -> JudgeSettings:
+    """Pick the judge endpoint. Explicit OPENAI_* / JUDGE_MODEL win; else LLM_* vars.
+
+    Never sends GROQ_API_KEY anywhere except api.groq.com. Raises RuntimeError
+    when nothing usable is configured.
+    """
+    from src.llm import DEFAULT_LLM_MODEL, resolve_llm_settings
+
+    env = os.environ if env is None else env
+
+    def g(k: str) -> str:
+        return (env.get(k) or "").strip()
+
+    judge_model = g("JUDGE_MODEL")
+    max_tokens = JUDGE_DEFAULT_MAX_TOKENS
+    if g("LLM_MAX_TOKENS").isdigit():
+        max_tokens = max(int(g("LLM_MAX_TOKENS")), JUDGE_DEFAULT_MAX_TOKENS)
+
+    explicit_base = g("OPENAI_BASE_URL").rstrip("/")
+    if explicit_base:
+        groq_host = "api.groq.com" in explicit_base
+        key = (
+            g("OPENAI_API_KEY")
+            or (g("GROQ_API_KEY") if groq_host else g("LLM_API_KEY"))
+            or "local"  # llama.cpp / Ollama ignore the key
+        )
+        model = judge_model or g("LLM_MODEL") or DEFAULT_LLM_MODEL
+        return JudgeSettings(explicit_base, model, key, max_tokens)
+
+    try:
+        s = resolve_llm_settings(env)
+    except ValueError as exc:
+        raise RuntimeError(f"Faithfulness judge not configured: {exc}") from exc
+
+    if s.provider == "openai_compatible":
+        return JudgeSettings(s.base_url, judge_model or s.model, s.api_key, max_tokens)
+
+    key = s.api_key or (g("OPENAI_API_KEY") if g("OPENAI_API_KEY").startswith("gsk_") else "")
+    if not key:
+        raise RuntimeError(
+            "No judge endpoint configured. Set GROQ_API_KEY (Groq default), or "
+            "LLM_PROVIDER=openai_compatible + LLM_BASE_URL + LLM_MODEL for a local "
+            "server, or OPENAI_BASE_URL (+ OPENAI_API_KEY, JUDGE_MODEL) for a judge-only endpoint."
+        )
+    return JudgeSettings(GROQ_OPENAI_BASE_URL, judge_model or s.model, key, max_tokens)
+
+
 def default_openai_judge(prompt: str) -> str:
     """Call an OpenAI-compatible Chat Completions endpoint."""
-    from src.config import JUDGE_MODEL, OPENAI_API_KEY, OPENAI_BASE_URL
+    from src.llm import strip_reasoning
 
-    base = OPENAI_BASE_URL or os.getenv("OPENAI_BASE_URL")
-    key = OPENAI_API_KEY or os.getenv("OPENAI_API_KEY") or os.getenv("GROQ_API_KEY")
-    model = JUDGE_MODEL or os.getenv("JUDGE_MODEL") or "openai/gpt-oss-120b"
-    if not base:
-        # Sensible Groq default when only GROQ_API_KEY is set.
-        if key and key.startswith("gsk_"):
-            base = "https://api.groq.com/openai/v1"
-        else:
-            raise RuntimeError(
-                "Set OPENAI_BASE_URL (and OPENAI_API_KEY) for the faithfulness judge, "
-                "e.g. OPENAI_BASE_URL=http://127.0.0.1:8080/v1 for llama.cpp, "
-                "or https://api.groq.com/openai/v1 with GROQ_API_KEY."
-            )
-    if not key:
-        key = "local"  # llama.cpp often ignores the key
+    js = resolve_judge_settings()
 
     try:
         from openai import OpenAI
@@ -126,17 +180,17 @@ def default_openai_judge(prompt: str) -> str:
             "(pip install openai). It talks to any OpenAI-compatible endpoint."
         ) from exc
 
-    client = OpenAI(base_url=base, api_key=key)
+    client = OpenAI(base_url=js.base_url, api_key=js.api_key)
     resp = client.chat.completions.create(
-        model=model,
+        model=js.model,
         temperature=0,
-        max_tokens=256,
+        max_tokens=js.max_tokens,
         messages=[
             {"role": "system", "content": "Return only the JSON object requested."},
             {"role": "user", "content": prompt},
         ],
     )
-    return resp.choices[0].message.content or ""
+    return strip_reasoning(resp.choices[0].message.content or "")
 
 
 def grade_one(

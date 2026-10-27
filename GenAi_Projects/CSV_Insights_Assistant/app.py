@@ -9,7 +9,8 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.config import DEFAULT_CSV, LLM_MODEL, MAX_ROWS, MAX_UPLOAD_MB
+from src.config import DEFAULT_CSV, MAX_ROWS, MAX_UPLOAD_MB
+from src.llm import llm_label
 from src.data_loader import load_csv_buffer, load_default
 from src.memory import ConversationMemory
 from src.orchestrator import create_orchestrator, empty_state
@@ -89,7 +90,7 @@ with st.sidebar:
         st.metric("Rows", f"{len(df):,}")
         st.metric("Columns", len(df.columns))
         st.caption(f"Source: {st.session_state.source_name}")
-        st.caption(f"Model: {LLM_MODEL}")
+        st.caption(f"Model: {llm_label()}")
         with st.expander("Schema"):
             st.text(schema_card(df))
 
@@ -113,7 +114,10 @@ try:
     _ensure_orchestrator()
 except Exception as exc:
     st.error(f"Could not start the agents: {exc}")
-    st.info("Put GROQ_API_KEY in .env")
+    st.info(
+        "Put GROQ_API_KEY in .env, or set LLM_PROVIDER=openai_compatible, "
+        "LLM_BASE_URL and LLM_MODEL for a local server (see README)."
+    )
     st.stop()
 
 for msg in st.session_state.chat_history:

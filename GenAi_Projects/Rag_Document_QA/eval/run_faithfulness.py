@@ -1,18 +1,21 @@
 """Answer-quality eval (faithfulness / OOS refusal) via an OpenAI-compatible judge.
 
 NOT run in CI and NOT run against paid APIs from this repo's automation.
-Wire a local llama.cpp server or your own Groq key:
+Generation and judging both reuse the app's LLM_* settings (src/llm.py).
 
-    export OPENAI_BASE_URL=http://127.0.0.1:8080/v1
-    export OPENAI_API_KEY=local
-    export JUDGE_MODEL=local-model
+Local llama.cpp / Ollama / LM Studio (free, nothing leaves your machine):
+
+    export LLM_PROVIDER=openai_compatible
+    export LLM_BASE_URL=http://localhost:8080/v1
+    export LLM_MODEL=<model name your server serves>
     python -m eval.run_faithfulness
 
-Or with Groq:
+Or with your own Groq key (default provider):
     export GROQ_API_KEY=gsk_...
-    export OPENAI_BASE_URL=https://api.groq.com/openai/v1
-    export JUDGE_MODEL=openai/gpt-oss-120b
     python -m eval.run_faithfulness
+
+Judge-only override (e.g. generate locally, judge elsewhere):
+    export OPENAI_BASE_URL=... OPENAI_API_KEY=... JUDGE_MODEL=...
 
 By default this script refuses to start if no endpoint is configured, so a
 bare `pytest` / CI run cannot accidentally bill anyone.
@@ -21,7 +24,6 @@ bare `pytest` / CI run cannot accidentally bill anyone.
 from __future__ import annotations
 
 import json
-import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -31,25 +33,24 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from eval.faithfulness import grade_one, summarize
+from eval.faithfulness import grade_one, resolve_judge_settings, summarize
 from eval.run_eval import build_eval_index, load_gold, resolve_pdf_dir
 from src.chain import ask
-from src.config import EVAL_DB_PATH, OPENAI_BASE_URL
-
-
-def _endpoint_configured() -> bool:
-    if OPENAI_BASE_URL or os.getenv("OPENAI_BASE_URL"):
-        return True
-    key = os.getenv("OPENAI_API_KEY") or os.getenv("GROQ_API_KEY")
-    return bool(key)
+from src.config import EVAL_DB_PATH
+from src.llm import llm_label, validate as validate_llm
 
 
 def main() -> None:
-    if not _endpoint_configured():
+    try:
+        judge = resolve_judge_settings()
+        validate_llm()  # generation side
+    except (RuntimeError, ValueError) as exc:
         raise SystemExit(
-            "Faithfulness eval needs OPENAI_BASE_URL (and usually OPENAI_API_KEY). "
-            "See the docstring in eval/run_faithfulness.py. Not run without an endpoint."
+            f"{exc}\nSee the docstring in eval/run_faithfulness.py. "
+            "Not run without an endpoint."
         )
+    print(f"generator: {llm_label()}")
+    print(f"judge: {judge.model} @ {judge.base_url}")
 
     gold = load_gold()
     pdf_dir, corpus = resolve_pdf_dir()
@@ -83,6 +84,8 @@ def main() -> None:
         "run_at_zone": "Asia/Calcutta",
         "corpus": corpus,
         "chunks": n_chunks,
+        "generator": llm_label(),
+        "judge": {"model": judge.model, "base_url": judge.base_url},
         "summary": summary,
         "rows": [
             {

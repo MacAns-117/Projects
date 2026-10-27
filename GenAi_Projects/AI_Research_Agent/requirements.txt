@@ -12,6 +12,9 @@ requests>=2.32.3
 
 # LLM
 groq>=0.11.0
+# Optional local / OpenAI-compatible provider (LLM_PROVIDER=openai_compatible)
+langchain-openai==0.3.35
+openai==2.54.0
 
 # UI
 streamlit>=1.40.1

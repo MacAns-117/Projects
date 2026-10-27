@@ -11,9 +11,9 @@ import json
 import re
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_groq import ChatGroq
+from langchain_core.language_models import BaseChatModel
 
-from src.config import LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS
+from src.llm import get_llm, strip_reasoning
 
 MIN_QUERIES = 3
 MAX_QUERIES = 5
@@ -123,21 +123,17 @@ def parse_query_list(raw: str) -> list[str] | None:
     return queries
 
 
-def create_planner(llm: ChatGroq | None = None):
+def create_planner(llm: BaseChatModel | None = None):
     """Create a planner chain.
 
     Args:
-        llm: An existing ChatGroq instance (optional — saves init time).
+        llm: An existing chat model (Groq or OpenAI-compatible) (optional — saves init time).
 
     Returns:
         A runnable chain that takes a question and returns search queries.
     """
     if llm is None:
-        llm = ChatGroq(
-            model=LLM_MODEL,
-            temperature=LLM_TEMPERATURE,
-            max_tokens=LLM_MAX_TOKENS,
-        )
+        llm = get_llm()
 
     prompt = ChatPromptTemplate.from_template(PLANNER_PROMPT)
     chain = prompt | llm
@@ -146,7 +142,7 @@ def create_planner(llm: ChatGroq | None = None):
 
 def plan_searches(
     question: str,
-    llm: ChatGroq | None = None,
+    llm: BaseChatModel | None = None,
     context: str = "",
 ) -> list[str]:
     """Decompose a research question into specific search queries.
@@ -156,7 +152,7 @@ def plan_searches(
 
     Args:
         question: The user's research question.
-        llm: An existing ChatGroq instance (optional).
+        llm: An existing chat model (Groq or OpenAI-compatible) (optional).
         context: Optional prior conversation context for follow-ups.
 
     Returns:
@@ -168,7 +164,7 @@ def plan_searches(
 
     for _attempt in range(2):
         response = chain.invoke(payload)
-        raw = _message_text(getattr(response, "content", response))
+        raw = strip_reasoning(_message_text(getattr(response, "content", response)))
         parsed = parse_query_list(raw)
         if parsed is not None:
             return parsed

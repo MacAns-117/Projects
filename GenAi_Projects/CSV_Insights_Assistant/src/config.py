@@ -14,7 +14,11 @@ DATA_DIR = BASE_DIR / "data"
 DEFAULT_CSV = DATA_DIR / "hotel_bookings.csv"
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-LLM_MODEL = "openai/gpt-oss-120b"
+# LLM provider: see src/llm.py. Default Groq + gpt-oss-120b; LLM_PROVIDER /
+# LLM_MODEL / LLM_BASE_URL / LLM_API_KEY switch to any OpenAI-compatible server.
+DEFAULT_LLM_MODEL = "openai/gpt-oss-120b"
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").strip().lower() or "groq"
+LLM_MODEL = os.getenv("LLM_MODEL", "").strip() or DEFAULT_LLM_MODEL
 LLM_TEMPERATURE = 0.1
 LLM_MAX_TOKENS = 2048
 
@@ -31,11 +35,10 @@ DROP_DUPLICATES = True
 
 
 def validate_config(*, require_data: bool = True) -> None:
-    if not GROQ_API_KEY:
-        raise ValueError(
-            "GROQ_API_KEY not found. Get a free key at https://console.groq.com/ "
-            "and put it in .env as GROQ_API_KEY=..."
-        )
+    # Provider-aware: Groq needs GROQ_API_KEY; openai_compatible needs LLM_MODEL.
+    from src.llm import validate as validate_llm
+
+    validate_llm()
     if require_data and not DEFAULT_CSV.exists():
         raise FileNotFoundError(
             f"Default sample CSV missing at {DEFAULT_CSV}. "

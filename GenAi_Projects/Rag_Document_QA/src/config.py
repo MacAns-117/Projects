@@ -24,7 +24,11 @@ HYBRID_VECTOR_WEIGHT = 0.6  # rest is BM25
 
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 EMBEDDING_DIM = 384
-LLM_MODEL = "openai/gpt-oss-120b"
+# LLM provider: see src/llm.py. Default Groq + gpt-oss-120b; LLM_PROVIDER /
+# LLM_MODEL / LLM_BASE_URL / LLM_API_KEY switch to any OpenAI-compatible server.
+DEFAULT_LLM_MODEL = "openai/gpt-oss-120b"
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").strip().lower() or "groq"
+LLM_MODEL = os.getenv("LLM_MODEL", "").strip() or DEFAULT_LLM_MODEL
 LLM_TEMPERATURE = 0.1
 LLM_MAX_TOKENS = 1024
 
@@ -46,7 +50,6 @@ GOLD_QA_PATH = ROOT / "eval" / "gold_qa.json"
 
 RETRIEVAL_METHODS = ("similarity", "mmr", "hybrid")
 
-# OpenAI-compatible judge / generation overrides (Groq, llama.cpp, etc.)
-OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "").strip() or None
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip() or os.getenv("GROQ_API_KEY", "").strip() or None
-JUDGE_MODEL = os.getenv("JUDGE_MODEL", os.getenv("LLM_MODEL", LLM_MODEL))
+# Faithfulness judge endpoint is resolved at call time by
+# eval.faithfulness.resolve_judge_settings(): explicit OPENAI_BASE_URL /
+# OPENAI_API_KEY / JUDGE_MODEL win, otherwise it reuses the app's LLM_* vars.

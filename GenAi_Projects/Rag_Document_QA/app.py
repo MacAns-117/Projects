@@ -17,11 +17,11 @@ from src.chunker import chunk_pages
 from src.config import (
     DEFAULT_DB_PATH,
     DEFAULT_TOP_K,
-    LLM_MODEL,
     MAX_PDFS,
     RETRIEVAL_METHODS,
     UPLOAD_DIR,
 )
+from src.llm import llm_label
 from src.pdf_loader import OCR_AVAILABLE, load_pdfs
 from src.reranker import reranker_available
 from src.vectorstore import clear_vectorstore, collection_count, ingest_chunks
@@ -95,7 +95,7 @@ with st.sidebar:
     st.divider()
     st.caption(f"Chunks in DB: {st.session_state.num_chunks}")
     st.caption(f"OCR: {'on' if OCR_AVAILABLE else 'off (install pytesseract + poppler)'}")
-    st.caption(f"LLM: {LLM_MODEL}")
+    st.caption(f"LLM: {llm_label()}")
     st.caption(
         f"Reranker: {'on' if st.session_state.use_reranker else 'off'}"
         + (" (model ready)" if available else " (unavailable)")

@@ -107,12 +107,40 @@ uvicorn api:app --reload
 # Retrieval eval (no LLM key; prefers data/arxiv_pdfs/)
 python -m eval.run_eval
 
-# Faithfulness / OOS judge (needs OpenAI-compatible endpoint — local llama.cpp or Groq)
-# export OPENAI_BASE_URL=http://127.0.0.1:8080/v1 OPENAI_API_KEY=local JUDGE_MODEL=local-model
+# Faithfulness / OOS judge (Groq key, or a local server via LLM_* — see below)
 # python -m eval.run_faithfulness
 
 # Run the tests (no API keys)
 python -m pytest tests/ -q</code></pre>
+
+<h2>Run with a local model (llama.cpp / Ollama / LM Studio)</h2>
+
+<p>Groq is the default and nothing changes if you leave the new variables unset (the hosted demo keeps using Groq). Set <code>LLM_PROVIDER=openai_compatible</code> to send every chat call to any server that speaks the OpenAI Chat Completions API instead. The provider switch lives in <code>src/llm.py</code>.</p>
+
+<pre><code># 1. Start a server (pick one)
+#    llama.cpp:  llama-server -m /path/to/model.gguf --alias my-model --port 8080 -c 32768 --jinja
+#                (--jinja is the default in current builds; older builds need it for tool calls)
+#    Ollama:     ollama serve            -> LLM_BASE_URL=http://localhost:11434/v1, LLM_MODEL=&lt;ollama tag&gt;
+#    LM Studio:  start the local server  -> LLM_BASE_URL=http://localhost:1234/v1
+
+# 2. Point the app at it (or put these in .env)
+export LLM_PROVIDER=openai_compatible
+export LLM_BASE_URL=http://localhost:8080/v1
+export LLM_MODEL=my-model           # required; `curl $LLM_BASE_URL/models` lists names
+# export LLM_API_KEY=...            # only if your server checks a key; a dummy is sent otherwise
+# export LLM_MAX_TOKENS=8192        # optional; raise it for "thinking" models
+# export LLM_TIMEOUT=600            # optional, seconds (default 300)
+streamlit run app.py
+# generation + faithfulness judge both use the LLM_* vars:
+# python -m eval.run_faithfulness</code></pre>
+
+<ul>
+  <li><strong>Not benchmarked locally.</strong> Retrieval numbers (Hit@k, MRR) do not depend on the LLM at all. Embeddings and the reranker already run locally. Answer quality does depend on the model, so measure your local model with <code>python -m eval.run_faithfulness</code> before quoting anything.</li>
+  <li><strong>Thinking models.</strong> Reasoning tokens count against the output cap. llama-server normally returns them in a separate <code>reasoning_content</code> field, and the app strips any <code>&lt;think&gt;…&lt;/think&gt;</code> block left in the answer. If replies come back empty or cut off, raise <code>LLM_MAX_TOKENS</code> or turn thinking off (for example <code>llama-server --reasoning-budget 0</code>).</li>
+  <li><strong>Plain prompt, no tools.</strong> RAG generation is a single prompt per question, so it is the least sensitive of the three apps to the model choice. Citations and the "I don't know" refusal are still prompt instructions, and smaller models follow them less reliably.</li>
+  <li><strong>Judge override.</strong> <code>OPENAI_BASE_URL</code>, <code>OPENAI_API_KEY</code> and <code>JUDGE_MODEL</code> still work as judge-only overrides (for example, generate locally and judge with a different model).</li>
+  <li><strong>Hosted demo.</strong> An app on Streamlit Cloud cannot reach <code>localhost</code> on your PC. Use local mode when you run the app on your own machine.</li>
+</ul>
 
 <h2>Repo layout</h2>
 
@@ -127,7 +155,7 @@ python -m pytest tests/ -q</code></pre>
 │   ├── vectorstore.py               # Persistent Chroma DB with replace-on-reingest
 │   ├── retriever.py                # Hybrid / MMR / similarity + OOS gates
 │   ├── reranker.py                 # Optional ms-marco MiniLM cross-encoder
-│   ├── llm.py                      # Groq openai/gpt-oss-120b wrapper (cached)
+│   ├── llm.py                      # Provider switch: Groq gpt-oss-120b (default) or OpenAI-compatible
 │   └── chain.py                    # End-to-end RAG with citation + refuse prompt
 ├── eval/
 │   ├── gold_qa.json                # 24 labelled questions on 2 arXiv PDFs

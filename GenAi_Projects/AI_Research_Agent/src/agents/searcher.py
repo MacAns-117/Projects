@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from langchain_groq import ChatGroq
+from langchain_core.language_models import BaseChatModel
 
 from src.config import MAX_SEARCH_RESULTS, MAX_SOURCES
 from src.tools.search_tools import search_web
@@ -31,7 +31,7 @@ class Source:
 
 def search_and_extract(
     queries: list[str],
-    llm: ChatGroq | None = None,
+    llm: BaseChatModel | None = None,
     max_per_query: int = MAX_SEARCH_RESULTS,
     max_sources: int = MAX_SOURCES,
 ) -> list[Source]:
@@ -46,7 +46,7 @@ def search_and_extract(
 
     Args:
         queries: List of search query strings (from the Planner).
-        llm: An existing ChatGroq instance (optional — saves init time).
+        llm: An existing chat model (Groq or OpenAI-compatible) (optional — saves init time).
         max_per_query: Max search results per query.
         max_sources: Max total sources to collect.
 

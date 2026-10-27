@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.config import LLM_MODEL
+from src.llm import llm_label
 from src.data_loader import load_csv_buffer, load_default
 from src.orchestrator import create_orchestrator, empty_state
 from src.schema import schema_card
@@ -71,7 +71,7 @@ def health():
             dataset_rows=len(_df),
             columns=len(_df.columns),
             source=_source_name or "",
-            model=LLM_MODEL,
+            model=llm_label(),
         )
     except Exception as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc

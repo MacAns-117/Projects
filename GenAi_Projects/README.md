@@ -41,12 +41,12 @@
     <tr>
       <td><a href="AI_Research_Agent/"><code>AI_Research_Agent</code></a></td>
       <td>Search the web and write a cited report</td>
-      <td>pytest <strong>30 passed</strong>; live web eval not run</td>
+      <td>pytest <strong>70 passed</strong>; live web eval not run</td>
     </tr>
   </tbody>
 </table>
 
-<p>Each folder has its own README with numbers, eval, and how to run it. All three need a Groq key for chat. RAG retrieval eval and the CSV pandas eval do not. The research-agent unit tests do not either. Its live web run does, and that run is not in this repo.</p>
+<p>Each folder has its own README with numbers, eval, and how to run it. All three need a Groq key for chat by default, or can run against a local OpenAI-compatible server (llama.cpp, Ollama, LM Studio) by setting <code>LLM_PROVIDER=openai_compatible</code>, <code>LLM_BASE_URL</code> and <code>LLM_MODEL</code>; see each README. RAG retrieval eval, the CSV pandas eval and all unit tests need no LLM at all. The research agent's live web run needs an LLM plus Tavily, and that run is not in this repo.</p>
 
 <hr>
 
@@ -128,7 +128,7 @@ python -m pytest tests/ -q</code></pre>
     <tr><th>Check</th><th>Result</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>RESEARCH_DEV=1 pytest tests/ -q</code></td><td><strong>30 passed</strong></td></tr>
+    <tr><td><code>RESEARCH_DEV=1 pytest tests/ -q</code></td><td><strong>70 passed</strong></td></tr>
     <tr><td><code>python -m eval.run_eval --mock</code></td><td><strong>15/15</strong> scorer smoke</td></tr>
     <tr><td>Live 15-question web run</td><td>Not run</td></tr>
   </tbody>
