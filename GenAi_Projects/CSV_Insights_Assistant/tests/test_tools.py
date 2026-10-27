@@ -80,6 +80,57 @@ class TestSql:
         with pytest.raises(ValueError):
             run_sql(sales_df, "SELECT 1; SELECT 2")
 
+    def test_rejects_read_text_passwd(self, sales_df):
+        with pytest.raises(ValueError, match="allowed"):
+            run_sql(sales_df, "SELECT * FROM read_text('/etc/passwd')")
+
+    def test_rejects_read_csv_environ(self, sales_df):
+        with pytest.raises(ValueError, match="allowed"):
+            run_sql(sales_df, "SELECT * FROM read_csv('/proc/self/environ')")
+
+    def test_rejects_glob_root(self, sales_df):
+        with pytest.raises(ValueError, match="allowed"):
+            run_sql(sales_df, "SELECT * FROM glob('/*')")
+
+    def test_rejects_read_parquet(self, sales_df):
+        with pytest.raises(ValueError, match="allowed"):
+            run_sql(sales_df, "SELECT * FROM read_parquet('/tmp/x.parquet')")
+
+    def test_rejects_proc_path_literal(self, sales_df):
+        # Even a bare path mention in SQL is refused by the denylist.
+        with pytest.raises(ValueError, match="allowed"):
+            run_sql(sales_df, "SELECT '/proc/self/environ' AS p")
+
+    def test_external_access_locked_even_if_denylist_bypassed(self, sales_df, monkeypatch):
+        """DuckDB itself must refuse filesystem reads if the denylist were skipped."""
+        import src.tools.sql_tools as sql_mod
+
+        class _NeverMatch:
+            def search(self, _s):
+                return None
+
+        monkeypatch.setattr(sql_mod, "_FORBIDDEN", _NeverMatch())
+        with pytest.raises(Exception) as excinfo:
+            sql_mod.run_sql(sales_df, "SELECT content FROM read_text('/etc/hostname')")
+        msg = str(excinfo.value).lower()
+        assert (
+            "permission" in msg
+            or "external" in msg
+            or "denied" in msg
+            or "not enabled" in msg
+            or "disabled" in msg
+        )
+
+    def test_cannot_reenable_external_access(self):
+        from src.tools.sql_tools import _connect
+
+        con = _connect()
+        try:
+            with pytest.raises(Exception):
+                con.execute("SET enable_external_access=true")
+        finally:
+            con.close()
+
 
 class TestViz:
     def test_bar(self, sample_df):
