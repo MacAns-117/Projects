@@ -1,157 +1,61 @@
 <h1>GenAI Projects</h1>
 
 <p>
-  <img src="https://img.shields.io/badge/projects-3-blue?style=flat-square" alt="3 projects">
-  <img src="https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54" alt="Python">
+  <img src="https://img.shields.io/badge/python-3.11-3670A0?style=flat-square&logo=python&logoColor=ffdd54" alt="Python 3.11">
   <img src="https://img.shields.io/badge/langchain-1C3C3C?style=flat-square&logo=langchain&logoColor=white" alt="LangChain">
   <img src="https://img.shields.io/badge/langgraph-1A1A2E?style=flat-square&logo=langchain&logoColor=white" alt="LangGraph">
   <img src="https://img.shields.io/badge/chromadb-FF6F00?style=flat-square&logo=chroma&logoColor=white" alt="ChromaDB">
   <img src="https://img.shields.io/badge/groq-F55036?style=flat-square&logo=groq&logoColor=white" alt="Groq">
   <img src="https://img.shields.io/badge/streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white" alt="Streamlit">
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/fastapi-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+  <a href="https://github.com/MacAns-117/Projects/actions/workflows/genai-tests.yml"><img src="https://github.com/MacAns-117/Projects/actions/workflows/genai-tests.yml/badge.svg" alt="GenAI tests"></a>
 </p>
 
-<blockquote><em>Three GenAI apps — PDF question-answering with citations, a LangGraph CSV analyst, and a web research agent that writes a cited report. Each folder has its own README with numbers and how to run it.</em></blockquote>
+<p>Three LLM apps: PDF question answering with citations, a LangGraph analyst for any CSV, and a web research agent that writes a cited report. Each has a Streamlit UI, a FastAPI wrapper, a test suite that needs no API keys, and an eval script. Open a folder for details and run steps.</p>
 
 <hr>
 
-<h2>What's in here</h2>
-
-<p>Three small projects I keep in one place:</p>
+<h2>Projects</h2>
 
 <table>
   <thead>
-    <tr>
-      <th>Folder</th>
-      <th>What it is</th>
-      <th>Headline</th>
-    </tr>
+    <tr><th>Project</th><th>What it does</th><th>Measured</th><th>Demo</th></tr>
   </thead>
   <tbody>
     <tr>
-      <td><a href="Rag_Document_QA/"><code>Rag_Document_QA</code></a></td>
-      <td>Ask questions over uploaded PDFs</td>
-      <td>Hybrid retrieval, Hit@8 <strong>77.3%</strong> (17/22)</td>
+      <td><a href="Rag_Document_QA/">Rag_Document_QA</a></td>
+      <td>Answers questions over uploaded PDFs with file + page citations. Hybrid BM25 + vector retrieval, optional cross-encoder rerank, OCR fallback.</td>
+      <td>Hit@8 77.3% (17/22), MRR 0.524, out-of-scope refused 2/2 · 62 tests</td>
+      <td><a href="https://projects-wktkeuxu6u3nqmz9vdyith.streamlit.app/">Live</a></td>
     </tr>
     <tr>
-      <td><a href="CSV_Insights_Assistant/"><code>CSV_Insights_Assistant</code></a></td>
-      <td>Ask questions over one CSV</td>
-      <td>Hotel sample <strong>87,230</strong> rows, pandas gold <strong>19/19</strong></td>
+      <td><a href="CSV_Insights_Assistant/">CSV_Insights_Assistant</a></td>
+      <td>Answers questions about any loaded CSV with pandas and read-only DuckDB SQL tools, and draws Plotly charts.</td>
+      <td>Pandas gold checks 19/19 on the hotel sample (87,230 rows) · 88 tests</td>
+      <td><a href="https://portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app/">Live</a></td>
     </tr>
     <tr>
-      <td><a href="AI_Research_Agent/"><code>AI_Research_Agent</code></a></td>
-      <td>Search the web and write a cited report</td>
-      <td>pytest <strong>70 passed</strong>; live web eval not run</td>
+      <td><a href="AI_Research_Agent/">AI_Research_Agent</a></td>
+      <td>Plans searches, reads pages via Tavily + trafilatura, and writes a Markdown report citing [1], [2].</td>
+      <td>70 tests · live 15-question eval not run</td>
+      <td><a href="https://projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app/">Live</a></td>
     </tr>
   </tbody>
 </table>
 
-<p>Each folder has its own README with numbers, eval, and how to run it. All three need a Groq key for chat by default, or can run against a local OpenAI-compatible server (llama.cpp, Ollama, LM Studio) by setting <code>LLM_PROVIDER=openai_compatible</code>, <code>LLM_BASE_URL</code> and <code>LLM_MODEL</code>; see each README. RAG retrieval eval, the CSV pandas eval and all unit tests need no LLM at all. The research agent's live web run needs an LLM plus Tavily, and that run is not in this repo.</p>
+<p>Test counts are from <code>python -m pytest tests/ -q</code> in each folder on 27 Oct 2026 (the research agent needs <code>RESEARCH_DEV=1</code>). CI runs all three suites without API keys: <a href="../.github/workflows/genai-tests.yml"><code>.github/workflows/genai-tests.yml</code></a>.</p>
+
+<p>What the numbers mean:</p>
+
+<ul>
+  <li>RAG: retrieval only, on 24 gold questions (22 in-scope, 2 out-of-scope) over two arXiv papers. Hit@8 means the gold page is in the top 8 chunks; it does not grade the answer text. The faithfulness judge exists but has no published score. See <a href="Rag_Document_QA/eval/results.md"><code>Rag_Document_QA/eval/results.md</code></a>.</li>
+  <li>CSV: the 19 checks compare pandas facts on the hotel table. The optional <code>--llm</code> run has not been done. See <a href="CSV_Insights_Assistant/eval/results.md"><code>CSV_Insights_Assistant/eval/results.md</code></a>.</li>
+  <li>Research agent: <code>python -m eval.run_eval --mock</code> gives 15/15, which only shows the scorer loads. No live accuracy number exists yet.</li>
+</ul>
 
 <hr>
 
-<h2>Multi-doc RAG Q&A</h2>
-
-<p>Upload 1–10 PDFs, chunk them (1000 / 200), embed with MiniLM, store in Chroma. Questions go through hybrid search (BM25 + vector cosine, weight 0.6), then Groq writes an answer with filename + page citations. OCR (Tesseract) is the fallback for scanned pages. Streamlit UI plus FastAPI <code>/health</code> <code>/ingest</code> <code>/ask</code>.</p>
-
-<p>Gold set: 24 questions (22 in-scope, 2 out-of-scope) on two public arXiv papers (Vaswani <em>Attention Is All You Need</em> and Lewis <em>RAG</em>).</p>
-
-<table>
-  <thead>
-    <tr><th>Method</th><th>Hit@8</th><th>Hits</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>Cosine (MiniLM only)</td><td>59.1%</td><td>13/22</td></tr>
-    <tr><td>MMR</td><td>68.2%</td><td>15/22</td></tr>
-    <tr><td><strong>Hybrid (BM25 + vector)</strong></td><td><strong>77.3%</strong></td><td><strong>17/22</strong></td></tr>
-  </tbody>
-</table>
-
-<p>Hit@8 = the gold page shows up in the top-8 chunks. It is <strong>not</strong> whether the LLM sentence is correct. Hybrid still misses 6 in-scope items (tables and author lines). The two out-of-scope questions still retrieve chunks — the 0.22 score floor is not a refuse gate. Streamlit Cloud wipes the vector store on reboot.</p>
-
-<p>Live demo: <a href="https://projects-wktkeuxu6u3nqmz9vdyith.streamlit.app/">projects-wktkeuxu6u3nqmz9vdyith.streamlit.app</a></p>
-
-<pre><code>cd Rag_Document_QA
-python -m pip install -r requirements.txt
-cp .env.example .env          # GROQ_API_KEY=
-streamlit run app.py
-python -m eval.run_eval
-python -m pytest tests/ -q</code></pre>
-
-<p>Stack: LangChain, Chroma, sentence-transformers, rank-bm25, pdfplumber, Tesseract, Groq, Streamlit, FastAPI.</p>
-
-<hr>
-
-<h2>CSV Insights Assistant</h2>
-
-<p>LangGraph router (<code>data</code> / <code>viz</code> / <code>both</code> / <code>general</code>) over <strong>whatever CSV is loaded</strong>. Tools: pandas filter / aggregate / stats / compare / correlation, plus read-only DuckDB SQL on table <code>data</code>. Viz writes a Plotly figure into a buffer; Streamlit draws that figure. Schema card (dtypes, nunique, examples) is injected at runtime so the prompt is not hard-coded to hotel columns.</p>
-
-<p>Default sample is the Antonio / Almeida / Nunes hotel demand table (arrivals <strong>July 2015 – August 2017</strong>). 119,390 raw → <strong>87,230</strong> after exact dups and all-zero guest rows. Upload another CSV (or <code>data/sample_sales.csv</code>) and the tools follow those columns.</p>
-
-<table>
-  <thead>
-    <tr><th>Fact (hotel sample)</th><th>Value</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>Clean rows</td><td>87,230</td></tr>
-    <tr><td>Cancellation rate</td><td>27.52%</td></tr>
-    <tr><td>City vs Resort cancel</td><td>30.10% vs 23.48%</td></tr>
-    <tr><td>Mean lead time (canceled / stayed)</td><td>105.7 / 70.2 days</td></tr>
-    <tr><td>Busiest arrival month</td><td>August (11,242)</td></tr>
-    <tr><td>Pandas gold checks</td><td><strong>19/19</strong></td></tr>
-  </tbody>
-</table>
-
-<p>One table per session. Caps: 50 MB / 200k rows, SQL 200 rows, chart 5,000 points. Follow-ups are previous turns pasted onto the next question. Pandas eval does not need Groq; <code>--llm</code> is a phrase check, not faithfulness.</p>
-
-<pre><code>cd CSV_Insights_Assistant
-python -m pip install -r requirements.txt
-cp .env.example .env          # GROQ_API_KEY=
-streamlit run app.py
-python -m eval.run_eval
-python -m pytest tests/ -q</code></pre>
-
-<p>Stack: LangGraph, pandas, DuckDB, Plotly, Groq, Streamlit, FastAPI.</p>
-
-<p>Live demo: <a href="https://portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app/">portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app</a></p>
-
-<hr>
-
-<h2>AI Research Agent</h2>
-
-<p>Ask a question. LangGraph runs one straight line: planner writes 3–5 search queries, the searcher calls Tavily and reads the page, the synthesizer compares the pages, and the report writer cites them as [1], [2]. There is no second search if the first pass is thin.</p>
-
-<p>Streamlit keeps the earlier chat and sends it in as context, so a follow-up can use the last report. The API is the same graph with an empty context. It binds to <code>127.0.0.1</code> and wants an <code>X-API-Token</code> unless <code>RESEARCH_DEV=1</code>.</p>
-
-<table>
-  <thead>
-    <tr><th>Check</th><th>Result</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>RESEARCH_DEV=1 pytest tests/ -q</code></td><td><strong>70 passed</strong></td></tr>
-    <tr><td><code>python -m eval.run_eval --mock</code></td><td><strong>15/15</strong> scorer smoke</td></tr>
-    <tr><td>Live 15-question web run</td><td>Not run</td></tr>
-  </tbody>
-</table>
-
-<p>The 15/15 check only proves the scorer and the gold file load. It is not a web-accuracy percent. The live command spends Groq and Tavily calls (about 30–60 minutes). Until you run it, do not quote one.</p>
-
-<pre><code>cd AI_Research_Agent
-python3.11 -m venv .venv && source .venv/bin/activate
-python -m pip install -r requirements.txt
-cp .env.example .env          # GROQ_API_KEY, TAVILY_API_KEY
-streamlit run app.py
-RESEARCH_DEV=1 python -m pytest tests/ -q
-python -m eval.run_eval --mock</code></pre>
-
-<p>Stack: LangGraph, LangChain, Tavily, trafilatura, Groq, Streamlit, FastAPI.</p>
-
-<p>Live demo: <a href="https://projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app/">projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app</a></p>
-
-
-<hr>
-
-<h2>Tech stack across all three</h2>
+<h2>Tech stack</h2>
 
 <table>
   <thead>
@@ -159,29 +63,41 @@ python -m eval.run_eval --mock</code></pre>
   </thead>
   <tbody>
     <tr><td>Language</td><td>Python 3.11</td></tr>
-    <tr><td>LLM</td><td>Groq <code>openai/gpt-oss-120b</code></td></tr>
-    <tr><td>Orchestration</td><td>LangChain (RAG) · LangGraph (CSV, research agent)</td></tr>
-    <tr><td>Unstructured</td><td>pdfplumber, Chroma, MiniLM, BM25, Tesseract</td></tr>
-    <tr><td>Structured</td><td>pandas, DuckDB, Plotly</td></tr>
+    <tr><td>LLM</td><td>Groq <code>openai/gpt-oss-120b</code> by default; any OpenAI-compatible server (llama.cpp, Ollama, LM Studio) via <code>LLM_PROVIDER=openai_compatible</code></td></tr>
+    <tr><td>Orchestration</td><td>LangChain (RAG), LangGraph (CSV, research agent)</td></tr>
+    <tr><td>Retrieval</td><td>pdfplumber, Tesseract OCR, MiniLM embeddings, Chroma, rank-bm25, ms-marco MiniLM cross-encoder</td></tr>
+    <tr><td>Structured data</td><td>pandas, DuckDB, Plotly</td></tr>
     <tr><td>Web research</td><td>Tavily, trafilatura</td></tr>
     <tr><td>UI / API</td><td>Streamlit, FastAPI</td></tr>
-    <tr><td>Eval / tests</td><td>gold JSON + pytest. Research live eval is paid and was not run here.</td></tr>
+    <tr><td>Tests / CI</td><td>pytest, GitHub Actions</td></tr>
   </tbody>
 </table>
 
 <hr>
 
+<h2>Running any of them</h2>
+
+<pre><code>cd GenAi_Projects/&lt;project&gt;
+python3.11 -m venv .venv && source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env          # GROQ_API_KEY; the research agent also needs TAVILY_API_KEY
+streamlit run app.py
+python -m pytest tests/ -q    # no keys needed (research agent: RESEARCH_DEV=1)</code></pre>
+
+<p>To use a local model instead of Groq, set <code>LLM_PROVIDER=openai_compatible</code>, <code>LLM_BASE_URL</code> and <code>LLM_MODEL</code>. Each README has a section on this, including what changes for tool calling and "thinking" models. The RAG retrieval eval, the CSV pandas eval and all unit tests need no LLM.</p>
+
+<hr>
+
 <h2>Layout</h2>
 
-<pre><code>README.md                         this file
-Rag_Document_QA/                  PDF Q&A + citations
-CSV_Insights_Assistant/           LangGraph CSV analyst
-AI_Research_Agent/                web research + cited report</code></pre>
-
-<p>Open a folder and use that README to run it. This file is only the index.</p>
+<pre><code>GenAi_Projects/
+├── README.md                  # this index
+├── Rag_Document_QA/           # PDF Q&amp;A with citations
+├── CSV_Insights_Assistant/    # LangGraph CSV analyst
+└── AI_Research_Agent/         # web research + cited report</code></pre>
 
 <hr>
 
 <h2>License</h2>
 
-<p>Code is MIT unless a child README says otherwise. RAG ships tiny synthetic sample PDFs for tests; full arXiv PDFs are optional for eval (see Rag_Document_QA/data/README.md). Hotel rows: Antonio, Almeida & Nunes, Scientific Data (2019) — see each <code>data/README.md</code>. The research agent ships no dataset. Tavily and Groq are their own services.</p>
+<p>Each app folder has an MIT <code>LICENSE</code>. Data: the RAG eval uses two public arXiv papers that you download yourself (<a href="Rag_Document_QA/data/README.md"><code>Rag_Document_QA/data/README.md</code></a>). The hotel sample is from Antonio, Almeida &amp; Nunes, Scientific Data (2019) (<a href="CSV_Insights_Assistant/data/README.md"><code>CSV_Insights_Assistant/data/README.md</code></a>). The research agent ships no dataset.</p>
