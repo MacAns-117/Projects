@@ -27,7 +27,7 @@
 
 <p>🔗 <strong><a href="https://projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app/">projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app</a></strong></p>
 
-<p>Try it now — upload any PDF (text-based or scanned) and ask questions. No login required.</p>
+<p>Try it now — ask a research question; the agent searches the web and writes a cited report. No login required. Uses your Streamlit secrets for Groq/Tavily.</p>
 
 <h2>What it does</h2>
 
@@ -101,6 +101,8 @@ python -m eval.run_eval --mock
 <pre><code>AI_Research_Agent/
 ├── app.py                         Streamlit
 ├── api.py                         FastAPI /health and /research
+├── .env.example                   Variable names only (no secrets)
+├── LICENSE                        MIT
 ├── src/
 │   ├── config.py                  keys, model, limits
 │   ├── orchestrator.py            LangGraph, linear
@@ -109,7 +111,7 @@ python -m eval.run_eval --mock
 │   └── tools/                     Tavily, extract, summarize
 ├── eval/gold_questions.json       15 questions
 ├── tests/                         30 tests, no paid keys
-└── .github/workflows/ci.yml       Python 3.11, pytest
+└── (repo) .github/workflows/genai-tests.yml   CI for all three GenAI suites
 </code></pre>
 
 <hr>

@@ -28,7 +28,7 @@
 
 <p>🔗 <strong><a href="https://portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app/">portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app</a></strong></p>
 
-<p>Try it now — upload any PDF (text-based or scanned) and ask questions. No login required.</p>
+<p>Try it now — the hotel sample loads by default, or upload any CSV and ask questions. No login required.</p>
 
 <h2>What it does</h2>
 
@@ -85,7 +85,7 @@ python -m pytest tests/ -q
 
 <h2>Layout</h2>
 
-<pre><code>Hotel_Insights_Assistant/
+<pre><code>CSV_Insights_Assistant/
 ├── app.py
 ├── api.py
 ├── src/

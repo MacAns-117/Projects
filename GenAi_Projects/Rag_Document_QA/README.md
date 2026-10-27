@@ -49,6 +49,8 @@
 
 <p>Hit@8 = at least one retrieved chunk's source page matches the gold page. Hybrid is the default in the app and API because it won on this set.</p>
 
+<p>Unit tests ship tiny synthetic PDFs under <code>data/sample_pdfs/</code>. The Hit@8 table above was measured on the full public arXiv PDFs — see <code>data/README.md</code> to re-download them before <code>python -m eval.run_eval</code>.</p>
+
 <h2>Tech stack</h2>
 
 <table>
@@ -66,7 +68,7 @@
     <tr><td>OCR fallback</td><td>Tesseract + pytesseract + pdf2image</td></tr>
     <tr><td>Web UI</td><td>Streamlit 1.40.1</td></tr>
     <tr><td>REST API</td><td>FastAPI (/health, /ingest, /ask)</td></tr>
-    <tr><td>Testing</td><td>pytest (12 tests, 11 pass)</td></tr>
+    <tr><td>Testing</td><td>pytest (12 tests)</td></tr>
     <tr><td>Deployment</td><td>Streamlit Community Cloud (free)</td></tr>
   </tbody>
 </table>
@@ -123,14 +125,13 @@ python -m pytest tests/ -q</code></pre>
 │       └── hit_at_8.png            # Bar chart of retrieval method comparison
 ├── tests/
 │   ├── conftest.py                 # Shared fixtures
-│   ├── test_pdf_loader.py          # PDF extraction tests
+│   ├── test_loader.py              # PDF extraction tests (synthetic sample PDFs)
 │   ├── test_chunker.py             # Chunk ID stability + overlap tests
-│   ├── test_vectorstore.py         # Replace-on-reingest tests
-│   ├── test_retriever.py           # Hybrid retrieval + clear tests
-│   ├── test_gold_qa.py             # Gold file validation tests
-│   └── test_prompt.py              # Prompt rules validation tests
+│   ├── test_retriever.py           # Hybrid retrieval + clear / replace-on-reingest
+│   ├── test_gold.py                # Gold file + config validation
+│   └── test_chain_prompt.py        # Prompt rules validation
 ├── data/
-│   ├── sample_pdfs/                # 2 shipped arXiv papers (Attention + Lewis RAG)
+│   ├── sample_pdfs/                # Tiny synthetic fixtures for CI (see data/README.md)
 │   └── README.md
 ├── .env.example
 ├── .gitignore

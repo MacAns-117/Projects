@@ -113,7 +113,7 @@ python -m pytest tests/ -q</code></pre>
 
 <p>Stack: LangGraph, pandas, DuckDB, Plotly, Groq, Streamlit, FastAPI.</p>
 
-<p>Live demo: <a href="https://projects-wktkeuxu6u3nqmz9vdyith.streamlit.app/">projects-wtvyr5raavdyaknbh4jml6y.streamlit.app</a></p>
+<p>Live demo: <a href="https://portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app/">portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app</a></p>
 
 <hr>
 
@@ -146,7 +146,7 @@ python -m eval.run_eval --mock</code></pre>
 
 <p>Stack: LangGraph, LangChain, Tavily, trafilatura, Groq, Streamlit, FastAPI.</p>
 
-<p>Live demo: <a href="https://projects-wktkeuxu6u3nqmz9vdyith.streamlit.app/">projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app</a></p>
+<p>Live demo: <a href="https://projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app/">projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app</a></p>
 
 
 <hr>
@@ -184,4 +184,4 @@ AI_Research_Agent/                web research + cited report</code></pre>
 
 <h2>License</h2>
 
-<p>Code is MIT unless a child README says otherwise. PDFs are public arXiv papers. Hotel rows: Antonio, Almeida & Nunes, Scientific Data (2019) — see each <code>data/README.md</code>. The research agent ships no dataset. Tavily and Groq are their own services.</p>
+<p>Code is MIT unless a child README says otherwise. RAG ships tiny synthetic sample PDFs for tests; full arXiv PDFs are optional for eval (see Rag_Document_QA/data/README.md). Hotel rows: Antonio, Almeida & Nunes, Scientific Data (2019) — see each <code>data/README.md</code>. The research agent ships no dataset. Tavily and Groq are their own services.</p>
