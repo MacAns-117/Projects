@@ -15,6 +15,8 @@ from langchain_groq import ChatGroq
 
 from src.config import LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS
 
+MIN_QUERIES = 3
+MAX_QUERIES = 5
 
 PLANNER_PROMPT = """You are a research planning assistant.
 
@@ -39,6 +41,86 @@ Prior conversation context (may be empty):
 Question: {question}
 
 Output:"""
+
+
+_FENCE_RE = re.compile(
+    r"^```(?:json|JSON)?\s*\n?(.*?)\n?```\s*$",
+    re.DOTALL,
+)
+
+
+def _strip_fences(text: str) -> str:
+    """Remove a wrapping markdown code fence if present."""
+    text = text.strip()
+    m = _FENCE_RE.match(text)
+    if m:
+        return m.group(1).strip()
+    # Partial fences (opening only / trailing only)
+    text = re.sub(r"^```(?:json|JSON)?\s*\n?", "", text)
+    text = re.sub(r"\n?```\s*$", "", text)
+    return text.strip()
+
+
+def _message_text(content) -> str:
+    """Normalize LLM message content to a plain string."""
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = []
+        for block in content:
+            if isinstance(block, str):
+                parts.append(block)
+            elif isinstance(block, dict) and "text" in block:
+                parts.append(str(block["text"]))
+            else:
+                parts.append(str(block))
+        return "".join(parts)
+    return str(content)
+
+
+def parse_query_list(raw: str) -> list[str] | None:
+    """Parse and validate planner output.
+
+    Returns a list of 3–5 non-empty strings, or None if the payload is unusable.
+    Never expands a JSON string into a list of characters.
+    """
+    if not raw or not str(raw).strip():
+        return None
+
+    cleaned = _strip_fences(str(raw))
+    data = None
+    try:
+        data = json.loads(cleaned)
+    except json.JSONDecodeError:
+        match = re.search(r"\[.*\]", cleaned, re.DOTALL)
+        if match:
+            try:
+                data = json.loads(match.group(0))
+            except json.JSONDecodeError:
+                return None
+        else:
+            return None
+
+    # A bare JSON string must not become list(str) → characters.
+    if isinstance(data, str):
+        return None
+    if not isinstance(data, list):
+        return None
+
+    queries: list[str] = []
+    for item in data:
+        if not isinstance(item, str):
+            return None
+        s = item.strip()
+        if not s:
+            return None
+        queries.append(s)
+
+    if not (MIN_QUERIES <= len(queries) <= MAX_QUERIES):
+        return None
+    return queries
 
 
 def create_planner(llm: ChatGroq | None = None):
@@ -69,47 +151,29 @@ def plan_searches(
 ) -> list[str]:
     """Decompose a research question into specific search queries.
 
+    Tries the LLM up to twice. Accepts only a JSON list of 3–5 non-empty
+    strings. On persistent bad output, falls back to ``[question]``.
+
     Args:
         question: The user's research question.
         llm: An existing ChatGroq instance (optional).
         context: Optional prior conversation context for follow-ups.
 
     Returns:
-        List of 3-5 search query strings. Falls back to [question] if empty.
+        List of 3-5 search query strings, or ``[question]`` as a last resort.
     """
     chain = create_planner(llm)
-    response = chain.invoke({"question": question, "context": context or "(none)"})
-    raw_output = response.content.strip()
+    fallback = [question]
+    payload = {"question": question, "context": context or "(none)"}
 
-    # The LLM might wrap in markdown code blocks or add extra text.
-    # We try to extract the JSON list robustly.
-    try:
-        # Try direct parse first
-        queries = json.loads(raw_output)
-    except json.JSONDecodeError:
-        # Try to find a JSON list in the text
-        match = re.search(r'\[.*?\]', raw_output, re.DOTALL)
-        if match:
-            try:
-                queries = json.loads(match.group(0))
-            except json.JSONDecodeError:
-                queries = []
-        else:
-            # Fallback: split by newlines and clean up
-            queries = [
-                line.strip().strip('"').strip("'").strip(",")
-                for line in raw_output.split("\n")
-                if line.strip() and not line.strip().startswith(("#", "//", "```"))
-            ]
+    for _attempt in range(2):
+        response = chain.invoke(payload)
+        raw = _message_text(getattr(response, "content", response))
+        parsed = parse_query_list(raw)
+        if parsed is not None:
+            return parsed
 
-    # Ensure we have strings
-    queries = [str(q) for q in queries if q]
-
-    # If parsing yielded nothing usable, fall back to the original question
-    if not queries:
-        queries = [question]
-
-    return queries
+    return fallback
 
 
 # --- Quick self-test when run directly ---

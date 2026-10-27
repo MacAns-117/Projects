@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 from langchain_chroma import Chroma
 from rank_bm25 import BM25Okapi
 
 from src.config import (
+    DEFAULT_COLLECTION,
     DEFAULT_DB_PATH,
     DEFAULT_TOP_K,
     HYBRID_VECTOR_WEIGHT,
@@ -15,6 +17,63 @@ from src.config import (
     SCORE_FLOOR,
 )
 from src.vectorstore import get_vectorstore
+
+# BM25 is built from the full collection — cache it and invalidate on ingest/clear.
+_bm25_cache: dict[str, dict] = {}
+
+
+def _cache_key(vectorstore: Chroma, db_path: str | None = None) -> str:
+    persist = db_path or getattr(vectorstore, "_persist_directory", None) or ""
+    try:
+        persist = str(Path(persist).resolve()) if persist else ""
+    except OSError:
+        persist = str(persist)
+    try:
+        coll = vectorstore._collection.name
+    except Exception:
+        coll = DEFAULT_COLLECTION
+    return f"{persist}::{coll}"
+
+
+def invalidate_bm25_cache(
+    db_path: str | None = None,
+    collection_name: str | None = None,
+) -> None:
+    """Drop cached BM25 indexes. Call after ingest or clear."""
+    if db_path is None:
+        _bm25_cache.clear()
+        return
+    try:
+        prefix = str(Path(db_path).resolve())
+    except OSError:
+        prefix = str(db_path)
+    coll = collection_name or DEFAULT_COLLECTION
+    exact = f"{prefix}::{coll}"
+    _bm25_cache.pop(exact, None)
+    # Also drop any key that starts with this persist dir (safety for alias paths)
+    for key in list(_bm25_cache):
+        if key.startswith(prefix + "::"):
+            _bm25_cache.pop(key, None)
+
+
+def _get_bm25_index(
+    vectorstore: Chroma,
+    db_path: str | None = None,
+) -> tuple[BM25Okapi | None, list]:
+    """Return (bm25, docs), building once per collection until invalidated."""
+    key = _cache_key(vectorstore, db_path=db_path)
+    cached = _bm25_cache.get(key)
+    if cached is not None:
+        return cached["bm25"], cached["docs"]
+
+    docs = _all_docs(vectorstore)
+    if not docs:
+        bm25 = None
+    else:
+        tokenized = [d.page_content.lower().split() for d in docs]
+        bm25 = BM25Okapi(tokenized)
+    _bm25_cache[key] = {"bm25": bm25, "docs": docs}
+    return bm25, docs
 
 
 @dataclass
@@ -109,13 +168,12 @@ def retrieve_hybrid(
     top_k: int = DEFAULT_TOP_K,
     vector_weight: float = HYBRID_VECTOR_WEIGHT,
     score_floor: float = SCORE_FLOOR,
+    db_path: str | None = None,
 ) -> list[RetrievedChunk]:
-    docs = _all_docs(vectorstore)
-    if not docs:
+    bm25, docs = _get_bm25_index(vectorstore, db_path=db_path)
+    if not docs or bm25 is None:
         return []
 
-    tokenized = [d.page_content.lower().split() for d in docs]
-    bm25 = BM25Okapi(tokenized)
     bm25_raw = bm25.get_scores(query.lower().split())
     bm25_max = max(float(x) for x in bm25_raw) or 1.0
     bm25_norm = [float(x) / bm25_max for x in bm25_raw]
@@ -153,10 +211,11 @@ def retrieve(
     method: str = "hybrid",
     score_floor: float = SCORE_FLOOR,
 ) -> list[RetrievedChunk]:
+    resolved_path = db_path
     if vectorstore is None:
         if db_path is None:
             db_path = DEFAULT_DB_PATH
-        from pathlib import Path
+        resolved_path = db_path
 
         if not Path(db_path).exists():
             return []
@@ -170,7 +229,11 @@ def retrieve(
             vectorstore=vectorstore, query=query, top_k=top_k, score_floor=score_floor
         )
     return retrieve_hybrid(
-        vectorstore=vectorstore, query=query, top_k=top_k, score_floor=score_floor
+        vectorstore=vectorstore,
+        query=query,
+        top_k=top_k,
+        score_floor=score_floor,
+        db_path=resolved_path,
     )
 
 
