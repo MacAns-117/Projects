@@ -9,9 +9,9 @@ ranked key insights. This is the "reasoning" step before report writing.
 from __future__ import annotations
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_groq import ChatGroq
+from langchain_core.language_models import BaseChatModel
 
-from src.config import LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS
+from src.llm import get_llm, strip_reasoning
 
 
 SYNTHESIS_PROMPT = """You are a research synthesis assistant.
@@ -51,33 +51,29 @@ Sources:
 Synthesis:"""
 
 
-def create_synthesizer(llm: ChatGroq | None = None):
+def create_synthesizer(llm: BaseChatModel | None = None):
     """Create a synthesizer chain.
 
     Args:
-        llm: An existing ChatGroq instance (optional — saves init time).
+        llm: An existing chat model (Groq or OpenAI-compatible) (optional — saves init time).
 
     Returns:
         A runnable chain that takes sources text and returns a synthesis.
     """
     if llm is None:
-        llm = ChatGroq(
-            model=LLM_MODEL,
-            temperature=LLM_TEMPERATURE,
-            max_tokens=LLM_MAX_TOKENS,
-        )
+        llm = get_llm()
 
     prompt = ChatPromptTemplate.from_template(SYNTHESIS_PROMPT)
     chain = prompt | llm
     return chain
 
 
-def synthesize(sources_text: str, llm: ChatGroq | None = None) -> str:
+def synthesize(sources_text: str, llm: BaseChatModel | None = None) -> str:
     """Synthesize multiple sources into a structured analysis.
 
     Args:
         sources_text: Formatted string of all source summaries (from Searcher).
-        llm: An existing ChatGroq instance (optional).
+        llm: An existing chat model (Groq or OpenAI-compatible) (optional).
 
     Returns:
         Structured synthesis string with Key Themes, Consensus,
@@ -88,7 +84,7 @@ def synthesize(sources_text: str, llm: ChatGroq | None = None) -> str:
 
     chain = create_synthesizer(llm)
     response = chain.invoke({"sources": sources_text})
-    return response.content
+    return strip_reasoning(response.content)
 
 
 # --- Quick self-test when run directly ---

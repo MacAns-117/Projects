@@ -21,7 +21,8 @@ import streamlit as st
 # Ensure src/ is importable
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.config import validate_config, LLM_MODEL
+from src.config import validate_config
+from src.llm import llm_label
 from src.orchestrator import create_orchestrator
 from src.memory import ConversationMemory
 
@@ -63,7 +64,10 @@ try:
     orchestrator = load_orchestrator()
 except Exception as e:
     st.error(f"Failed to initialize: {e}")
-    st.info("Make sure GROQ_API_KEY and TAVILY_API_KEY are set in .env")
+    st.info(
+        "Make sure TAVILY_API_KEY is set in .env, plus GROQ_API_KEY "
+        "(or LLM_PROVIDER=openai_compatible + LLM_BASE_URL + LLM_MODEL for a local model)."
+    )
     st.stop()
 
 
@@ -80,7 +84,7 @@ with st.sidebar:
     st.divider()
 
     st.subheader("Tech Stack")
-    st.caption(f"• LLM: {LLM_MODEL}")
+    st.caption(f"• LLM: {llm_label()}")
     st.caption("• LangGraph multi-agent orchestration")
     st.caption("• Tavily web search API")
     st.caption("• 4 agents: Planner, Searcher, Synthesizer, Report Writer")

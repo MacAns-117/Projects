@@ -28,7 +28,7 @@
 
 <p>🔗 <strong><a href="https://portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app/">portfolio-wtvyr5raavdyaknbh4jml6.streamlit.app</a></strong></p>
 
-<p>Try it now — upload any PDF (text-based or scanned) and ask questions. No login required.</p>
+<p>Try it now — the hotel sample loads by default, or upload any CSV and ask questions. No login required.</p>
 
 <h2>What it does</h2>
 
@@ -83,9 +83,39 @@ python -m pytest tests/ -q
 
 <hr>
 
+<h2>Run with a local model (llama.cpp / Ollama / LM Studio)</h2>
+
+<p>Groq is the default and nothing changes if you leave the new variables unset (the hosted demo keeps using Groq). Set <code>LLM_PROVIDER=openai_compatible</code> to send every chat call to any server that speaks the OpenAI Chat Completions API instead. The provider switch lives in <code>src/llm.py</code>.</p>
+
+<pre><code># 1. Start a server (pick one)
+#    llama.cpp:  llama-server -m /path/to/model.gguf --alias my-model --port 8080 -c 32768 --jinja
+#                (--jinja is the default in current builds; older builds need it for tool calls)
+#    Ollama:     ollama serve            -> LLM_BASE_URL=http://localhost:11434/v1, LLM_MODEL=&lt;ollama tag&gt;
+#    LM Studio:  start the local server  -> LLM_BASE_URL=http://localhost:1234/v1
+
+# 2. Point the app at it (or put these in .env)
+export LLM_PROVIDER=openai_compatible
+export LLM_BASE_URL=http://localhost:8080/v1
+export LLM_MODEL=my-model           # required; `curl $LLM_BASE_URL/models` lists names
+# export LLM_API_KEY=...            # only if your server checks a key; a dummy is sent otherwise
+# export LLM_MAX_TOKENS=8192        # optional; raise it for "thinking" models
+# export LLM_TIMEOUT=600            # optional, seconds (default 300)
+streamlit run app.py
+# python -m eval.run_eval --llm      # router/answer phrase check against your local model</code></pre>
+
+<ul>
+  <li><strong>Not benchmarked locally.</strong> The table figures above come from pandas and do not use an LLM. The optional <code>--llm</code> phrase check has not been run against a local model in this repo.</li>
+  <li><strong>Thinking models.</strong> Reasoning tokens count against the output cap. llama-server normally returns them in a separate <code>reasoning_content</code> field, and the app strips any <code>&lt;think&gt;…&lt;/think&gt;</code> block left in the answer. If replies come back empty or cut off, raise <code>LLM_MAX_TOKENS</code> or turn thinking off (for example <code>llama-server --reasoning-budget 0</code>).</li>
+  <li><strong>Tool calling.</strong> The data analyst and the chart agent depend on OpenAI-style tool calls. Your server must support <code>tools</code> (llama.cpp with Jinja templates, recent Ollama and LM Studio do, if the model's chat template supports tools). Smaller local models are more likely to pick the wrong column, send malformed arguments, or stop after the 6-step limit. Tool errors go back to the model as text, so a bad call does not crash the turn, but the answer can come back incomplete.</li>
+  <li><strong>Router.</strong> The router expects one word (<code>data</code>/<code>viz</code>/<code>both</code>/<code>general</code>). Anything else falls back to <code>data</code>.</li>
+  <li><strong>Hosted demo.</strong> An app on Streamlit Cloud cannot reach <code>localhost</code> on your PC. Use local mode when you run the app on your own machine.</li>
+</ul>
+
+<hr>
+
 <h2>Layout</h2>
 
-<pre><code>Hotel_Insights_Assistant/
+<pre><code>CSV_Insights_Assistant/
 ├── app.py
 ├── api.py
 ├── src/

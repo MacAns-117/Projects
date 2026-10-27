@@ -1,6 +1,9 @@
 langchain>=0.3.7,<0.4.0
 langchain-community>=0.3.5,<0.4.0
 langchain-groq>=0.2.1,<0.4.0
+# Optional local / OpenAI-compatible provider (LLM_PROVIDER=openai_compatible)
+langchain-openai==0.3.35
+openai==2.54.0
 langchain-core>=0.3.15,<0.4.0
 langgraph>=0.2.45,<0.4.0
 pandas>=2.2.3

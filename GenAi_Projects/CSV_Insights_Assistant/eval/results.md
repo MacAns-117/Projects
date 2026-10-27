@@ -35,5 +35,5 @@ Default table: hotel bookings after clean (arrivals July 2015 – August 2017).
 
 ## LLM run
 
-Skipped. `python -m eval.run_eval --llm` needs GROQ_API_KEY.
+Skipped. `python -m eval.run_eval --llm` needs GROQ_API_KEY (or LLM_PROVIDER=openai_compatible + LLM_MODEL for a local server).
 Phrase matching is not a faithfulness score.

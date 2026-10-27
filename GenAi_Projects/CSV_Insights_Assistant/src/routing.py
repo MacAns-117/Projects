@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
+import re
+
+# Local reasoning models may prefix the reply with <think>...</think>.
+_THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
+
 
 def classify_intent(text: str) -> str:
+    text = _THINK_RE.sub("", text or "")
     token = text.strip().lower().split()[0] if text.strip() else "data"
     token = token.strip(".,:;")
     if token not in {"data", "viz", "both", "general"}:

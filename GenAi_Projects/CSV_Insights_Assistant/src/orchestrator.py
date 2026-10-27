@@ -48,6 +48,8 @@ def create_orchestrator(df: pd.DataFrame, llm=None, chart_buffer: ChartBuffer | 
     viz = create_viz_agent(df, buffer, llm)
 
     def router_node(state: AgentState) -> dict:
+        # New user turn — never show a chart from a previous question.
+        buffer.clear()
         response = router_chain.invoke({"question": state["question"]})
         return {"intent": classify_intent(response.content)}
 

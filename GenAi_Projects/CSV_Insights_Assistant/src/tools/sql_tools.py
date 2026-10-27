@@ -9,10 +9,28 @@ import pandas as pd
 
 from src.config import SQL_ROW_CAP
 
+# Keyword denylist — defence in depth on top of DuckDB's enable_external_access=False.
+# Covers DDL/DML plus file/system readers that must never touch the host.
 _FORBIDDEN = re.compile(
-    r"\b(insert|update|delete|drop|alter|attach|copy|create|replace|grant|pragma)\b",
+    r"\b("
+    r"insert|update|delete|drop|alter|attach|copy|create|replace|grant|pragma|"
+    r"read_text|read_blob|read_csv|read_csv_auto|read_parquet|read_json|"
+    r"read_json_auto|read_ndjson|glob"
+    r")\b"
+    r"|/proc",
     re.IGNORECASE,
 )
+
+
+def _connect() -> duckdb.DuckDBPyConnection:
+    """In-memory DuckDB with filesystem / HTTP access locked off."""
+    # lock_configuration=True prevents SET enable_external_access=true later.
+    return duckdb.connect(
+        config={
+            "enable_external_access": False,
+            "lock_configuration": True,
+        }
+    )
 
 
 def run_sql(df: pd.DataFrame, query: str, row_cap: int = SQL_ROW_CAP) -> pd.DataFrame:
@@ -27,7 +45,7 @@ def run_sql(df: pd.DataFrame, query: str, row_cap: int = SQL_ROW_CAP) -> pd.Data
         raise ValueError("Query rejected: only read-only SELECT/WITH is allowed.")
     if ";" in stripped:
         raise ValueError("One statement only.")
-    con = duckdb.connect()
+    con = _connect()
     try:
         con.register("data", df)
         result = con.execute(stripped).df()

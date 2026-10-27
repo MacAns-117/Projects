@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/tavily-1A1A1A?style=flat-square" alt="Tavily">
   <img src="https://img.shields.io/badge/streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white" alt="Streamlit">
   <img src="https://img.shields.io/badge/fastapi-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/tests-30%20passed-2ea44f?style=flat-square" alt="30 passed">
+  <img src="https://img.shields.io/badge/tests-70%20passed-2ea44f?style=flat-square" alt="70 passed">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
 </p>
 
@@ -27,7 +27,7 @@
 
 <p>🔗 <strong><a href="https://projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app/">projects-4vtuq5ybps6g3rgyzg84ry.streamlit.app</a></strong></p>
 
-<p>Try it now — upload any PDF (text-based or scanned) and ask questions. No login required.</p>
+<p>Try it now — ask a research question; the agent searches the web and writes a cited report. No login required. Uses your Streamlit secrets for Groq/Tavily.</p>
 
 <h2>What it does</h2>
 
@@ -58,13 +58,13 @@
     <tr><th>Check</th><th>Result</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>RESEARCH_DEV=1 python -m pytest tests/ -q</code></td><td><strong>30 passed</strong></td></tr>
+    <tr><td><code>RESEARCH_DEV=1 python -m pytest tests/ -q</code></td><td><strong>70 passed</strong></td></tr>
     <tr><td><code>python -m eval.run_eval --mock</code></td><td><strong>15/15</strong> scorer smoke</td></tr>
     <tr><td>Live run of the 15 gold questions</td><td>Not run</td></tr>
   </tbody>
 </table>
 
-<p>The 30 tests do not call Groq or Tavily. They cover config, the planner fallback, the memory window, extract URL blocks, and the API auth matrix (503 / 401 / 200). The 15/15 line only proves the scorer and <code>eval/gold_questions.json</code> load. It is not a web-accuracy percent.</p>
+<p>The 70 tests do not call Groq, Tavily or a local LLM server. They cover config, LLM provider selection (Groq default vs OpenAI-compatible), the planner fallback, the memory window, extract URL blocks, and the API auth matrix (503 / 401 / 200). The 15/15 line only proves the scorer and <code>eval/gold_questions.json</code> load. It is not a web-accuracy percent.</p>
 
 <p>Live eval is <code>python -m eval.run_eval</code>. That is about 15 full pipelines, 100+ API calls, and 30–60 minutes. Skip it unless you accept the Groq and Tavily cost. Without keys, that command skips instead of failing.</p>
 
@@ -75,7 +75,7 @@
 <pre><code>python3.11 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
-cp .env.example .env               # GROQ_API_KEY, TAVILY_API_KEY
+cp .env.example .env               # GROQ_API_KEY (or local LLM_*), TAVILY_API_KEY
                                    # RESEARCH_API_TOKEN if you use the API
 
 streamlit run app.py
@@ -96,20 +96,53 @@ python -m eval.run_eval --mock
 
 <hr>
 
+<h2>Run with a local model (llama.cpp / Ollama / LM Studio)</h2>
+
+<p>Groq is the default and nothing changes if you leave the new variables unset (the hosted demo keeps using Groq). Set <code>LLM_PROVIDER=openai_compatible</code> to send every chat call to any server that speaks the OpenAI Chat Completions API instead. The provider switch lives in <code>src/llm.py</code>.</p>
+
+<pre><code># 1. Start a server (pick one)
+#    llama.cpp:  llama-server -m /path/to/model.gguf --alias my-model --port 8080 -c 32768 --jinja
+#                (--jinja is the default in current builds; older builds need it for tool calls)
+#    Ollama:     ollama serve            -> LLM_BASE_URL=http://localhost:11434/v1, LLM_MODEL=&lt;ollama tag&gt;
+#    LM Studio:  start the local server  -> LLM_BASE_URL=http://localhost:1234/v1
+
+# 2. Point the app at it (or put these in .env)
+export LLM_PROVIDER=openai_compatible
+export LLM_BASE_URL=http://localhost:8080/v1
+export LLM_MODEL=my-model           # required; `curl $LLM_BASE_URL/models` lists names
+# export LLM_API_KEY=...            # only if your server checks a key; a dummy is sent otherwise
+# export LLM_MAX_TOKENS=8192        # optional; raise it for "thinking" models
+# export LLM_TIMEOUT=600            # optional, seconds (default 300)
+streamlit run app.py          # TAVILY_API_KEY is still needed for web search</code></pre>
+
+<ul>
+  <li><strong>Not benchmarked locally.</strong> No live eval has been run with Groq or with a local model, so there are no accuracy numbers to compare.</li>
+  <li><strong>Thinking models.</strong> Reasoning tokens count against the output cap. llama-server normally returns them in a separate <code>reasoning_content</code> field, and the app strips any <code>&lt;think&gt;…&lt;/think&gt;</code> block left in the answer. If replies come back empty or cut off, raise <code>LLM_MAX_TOKENS</code> or turn thinking off (for example <code>llama-server --reasoning-budget 0</code>).</li>
+  <li><strong>Web search is not local.</strong> Tavily still does the searching and still needs <code>TAVILY_API_KEY</code>. Only the LLM calls move to your machine.</li>
+  <li><strong>Structured output.</strong> The planner asks for a JSON list of 3–5 queries. It retries once and then falls back to searching the raw question, so a weaker model degrades search breadth rather than crashing. The pipeline does not use tool calling.</li>
+  <li><strong>Context size.</strong> The synthesizer and report writer get several page summaries at once (report cap 4096 output tokens). Start llama-server with a large enough <code>-c</code> (for example 32768) or prompts get truncated or rejected.</li>
+  <li><strong>Hosted demo.</strong> An app on Streamlit Cloud cannot reach <code>localhost</code> on your PC. Use local mode when you run the app on your own machine.</li>
+</ul>
+
+<hr>
+
 <h2>Layout</h2>
 
 <pre><code>AI_Research_Agent/
 ├── app.py                         Streamlit
 ├── api.py                         FastAPI /health and /research
+├── .env.example                   Variable names only (no secrets)
+├── LICENSE                        MIT
 ├── src/
 │   ├── config.py                  keys, model, limits
+│   ├── llm.py                     Groq (default) or OpenAI-compatible provider switch
 │   ├── orchestrator.py            LangGraph, linear
 │   ├── memory.py                  sliding window of turns
 │   ├── agents/                    planner, searcher, synthesizer, report writer
 │   └── tools/                     Tavily, extract, summarize
 ├── eval/gold_questions.json       15 questions
-├── tests/                         30 tests, no paid keys
-└── .github/workflows/ci.yml       Python 3.11, pytest
+├── tests/                         70 tests, no paid keys
+└── (repo) .github/workflows/genai-tests.yml   CI for all three GenAI suites
 </code></pre>
 
 <hr>

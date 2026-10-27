@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from src.llm import get_llm
+from src.llm import get_llm, strip_reasoning
 
 REPORT_WRITER_PROMPT = """You write a short answer from tool output. You do not have the table.
 
@@ -43,4 +43,4 @@ def write_report(
             "chart_description": chart_description or "No chart generated.",
         }
     )
-    return message.content
+    return strip_reasoning(message.content)

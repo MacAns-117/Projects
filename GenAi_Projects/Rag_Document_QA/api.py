@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -17,9 +18,10 @@ from src.chain import ask
 from src.chunker import chunk_pages
 from src.config import DEFAULT_DB_PATH, DEFAULT_TOP_K, MAX_PDFS, RETRIEVAL_METHODS
 from src.pdf_loader import load_pdfs
+from src.reranker import reranker_available
 from src.vectorstore import collection_count, ingest_chunks
 
-app = FastAPI(title="RAG Document QA", version="1.1")
+app = FastAPI(title="RAG Document QA", version="1.2")
 
 
 class IngestBody(BaseModel):
@@ -30,11 +32,16 @@ class AskBody(BaseModel):
     question: str
     top_k: int = DEFAULT_TOP_K
     method: str = "hybrid"
+    use_reranker: Optional[bool] = None  # None = auto (on if model loads)
 
 
 @app.get("/health")
 def health():
-    return {"ok": True, "chunks": collection_count(DEFAULT_DB_PATH)}
+    return {
+        "ok": True,
+        "chunks": collection_count(DEFAULT_DB_PATH),
+        "reranker_available": reranker_available(),
+    }
 
 
 @app.post("/ingest")
@@ -59,10 +66,12 @@ def ask_route(body: AskBody):
         db_path=DEFAULT_DB_PATH,
         top_k=body.top_k,
         method=body.method,
+        use_reranker=body.use_reranker,
     )
     return {
         "answer": result.answer,
         "method": result.method,
+        "reranked": result.reranked,
         "citations": [
             {"n": i, "citation": c.citation, "score": c.score}
             for i, c in enumerate(result.citations, 1)

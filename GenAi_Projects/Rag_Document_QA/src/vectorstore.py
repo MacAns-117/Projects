@@ -77,6 +77,10 @@ def ingest_chunks(
         )
 
     vectorstore.add_documents(documents, ids=ids)
+    # Hybrid retrieval caches BM25 over the collection — drop it after writes.
+    from src.retriever import invalidate_bm25_cache
+
+    invalidate_bm25_cache(db_path=db_path, collection_name=collection_name)
     return len(documents)
 
 
@@ -90,6 +94,9 @@ def clear_vectorstore(
     db_dir = Path(db_path)
     if db_dir.exists():
         shutil.rmtree(db_dir, ignore_errors=True)
+    from src.retriever import invalidate_bm25_cache
+
+    invalidate_bm25_cache(db_path=db_path, collection_name=collection_name)
 
 
 def collection_count(

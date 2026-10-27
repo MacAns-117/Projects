@@ -17,10 +17,10 @@ from __future__ import annotations
 
 from typing import TypedDict
 
-from langchain_groq import ChatGroq
+from langchain_core.language_models import BaseChatModel
 from langgraph.graph import StateGraph, END
 
-from src.config import LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS
+from src.llm import get_llm
 from src.agents.planner import plan_searches
 from src.agents.searcher import search_and_extract, format_sources_for_synthesis, Source
 from src.agents.synthesizer import synthesize
@@ -40,7 +40,7 @@ class ResearchState(TypedDict):
 
 
 # --- Node 1: Planner ---
-def create_planner_node(llm: ChatGroq):
+def create_planner_node(llm: BaseChatModel):
     """Create the planner node function."""
     def planner_node(state: ResearchState) -> dict:
         question = state["question"]
@@ -59,7 +59,7 @@ def create_planner_node(llm: ChatGroq):
 
 
 # --- Node 2: Searcher ---
-def create_searcher_node(llm: ChatGroq):
+def create_searcher_node(llm: BaseChatModel):
     """Create the searcher node function."""
     def searcher_node(state: ResearchState) -> dict:
         queries = state["search_queries"]
@@ -77,7 +77,7 @@ def create_searcher_node(llm: ChatGroq):
 
 
 # --- Node 3: Synthesizer ---
-def create_synthesizer_node(llm: ChatGroq):
+def create_synthesizer_node(llm: BaseChatModel):
     """Create the synthesizer node function."""
     def synthesizer_node(state: ResearchState) -> dict:
         sources_text = state.get("sources_text", "No sources found.")
@@ -92,7 +92,7 @@ def create_synthesizer_node(llm: ChatGroq):
 
 
 # --- Node 4: Report Writer ---
-def create_report_writer_node(llm: ChatGroq):
+def create_report_writer_node(llm: BaseChatModel):
     """Create the report writer node function."""
     def report_writer_node(state: ResearchState) -> dict:
         question = state["question"]
@@ -117,7 +117,7 @@ def create_report_writer_node(llm: ChatGroq):
 
 
 # --- Build the Graph ---
-def create_orchestrator(llm: ChatGroq | None = None):
+def create_orchestrator(llm: BaseChatModel | None = None):
     """Create the LangGraph orchestrator for the research agent.
 
     The graph flow is linear (no retries / MAX_ITERATIONS loop):
@@ -130,17 +130,13 @@ def create_orchestrator(llm: ChatGroq | None = None):
         {"question": "...", "context": "" (optional prior turns), ...}
 
     Args:
-        llm: An existing ChatGroq instance (optional — saves init time).
+        llm: An existing chat model (Groq or OpenAI-compatible) (optional — saves init time).
 
     Returns:
         Compiled LangGraph ready to invoke with {"question": "...", "context": "..."}
     """
     if llm is None:
-        llm = ChatGroq(
-            model=LLM_MODEL,
-            temperature=LLM_TEMPERATURE,
-            max_tokens=LLM_MAX_TOKENS,
-        )
+        llm = get_llm()
 
     # Create node functions
     planner = create_planner_node(llm)

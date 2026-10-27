@@ -28,7 +28,8 @@ from pydantic import BaseModel
 # Ensure src/ is importable
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.config import validate_config, LLM_MODEL
+from src.config import validate_config
+from src.llm import llm_label
 from src.orchestrator import create_orchestrator
 
 logger = logging.getLogger(__name__)
@@ -92,7 +93,7 @@ async def health_check():
     """Check if the API is running."""
     try:
         _ensure_loaded()
-        return HealthResponse(status="ok", model=LLM_MODEL)
+        return HealthResponse(status="ok", model=llm_label())
     except Exception:
         logger.exception("Health check failed")
         raise HTTPException(status_code=503, detail="Service not ready")

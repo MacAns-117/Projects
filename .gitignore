@@ -73,14 +73,15 @@ Thumbs.db
 logs/
 
 # =====================
-# GenAI_Projects / Rag_Document_QA — specific
+# GenAi_Projects / Rag_Document_QA — specific
 # =====================
 # Vector database (local ChromaDB storage)
-GenAI_Projects/Rag_Document_QA/chroma_db/
-GenAI_Projects/Rag_Document_QA/chroma_db_test/
+GenAi_Projects/Rag_Document_QA/chroma_db/
+GenAi_Projects/Rag_Document_QA/chroma_db_eval/
+GenAi_Projects/Rag_Document_QA/chroma_db_test/
 
-# Sample PDFs (don't commit other people's copyrighted content)
-GenAI_Projects/Rag_Document_QA/data/sample_pdfs/*.pdf
+# Tiny synthetic sample PDFs under data/sample_pdfs/ ARE tracked (CI/unit tests).
+# Do not commit full copyrighted papers here — download those locally via data/README.md.
 
 # =====================
 # Django projects — sensitive
@@ -104,3 +105,5 @@ data/external/
 # =====================
 .streamlit/
 .streamlit/secrets.toml
+# Full arXiv PDFs for RAG eval (download per data/README.md; not for CI)
+GenAi_Projects/Rag_Document_QA/data/arxiv_pdfs/

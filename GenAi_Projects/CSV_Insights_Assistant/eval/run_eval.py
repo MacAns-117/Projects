@@ -189,7 +189,8 @@ def write_outputs(payload: dict) -> None:
             "",
             "## LLM run",
             "",
-            "Skipped. `python -m eval.run_eval --llm` needs GROQ_API_KEY.",
+            "Skipped. `python -m eval.run_eval --llm` needs GROQ_API_KEY "
+            "(or LLM_PROVIDER=openai_compatible + LLM_MODEL for a local server).",
             "Phrase matching is not a faithfulness score.",
         ]
     RESULTS_MD.write_text("\n".join(lines) + "\n")

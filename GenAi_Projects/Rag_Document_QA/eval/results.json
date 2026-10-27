@@ -2,30 +2,76 @@
   "top_k": 8,
   "chunks": 132,
   "n_questions": 24,
+  "corpus": "arxiv_full",
+  "pdf_dir": "/workspace/gh/Projects/GenAi_Projects/Rag_Document_QA/data/arxiv_pdfs",
+  "score_floor": 0.22,
+  "min_top_score": 0.32,
+  "rerank_candidates": 20,
+  "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+  "reranker_available": true,
+  "run_at": "2026-10-27T13:52:50.793327+05:30",
+  "run_at_zone": "Asia/Calcutta",
+  "setup": "corpus=arxiv_full; MiniLM embeddings; hybrid weight 0.6; score_floor=0.22; min_top_score=0.32; ce_min_score=-9.0; rerank=cross-encoder/ms-marco-MiniLM-L-6-v2 candidates=20\u21928; device=cpu",
   "methods": {
     "similarity": {
-      "hit_at_k": 0.5909,
-      "hits": 13,
-      "in_scope": 22,
-      "oos_refuse_rate": 0.0,
-      "oos_ok": 0,
-      "oos_n": 2
-    },
-    "mmr": {
       "hit_at_k": 0.6818,
+      "mrr": 0.4065,
       "hits": 15,
       "in_scope": 22,
       "oos_refuse_rate": 0.0,
       "oos_ok": 0,
-      "oos_n": 2
+      "oos_n": 2,
+      "use_reranker": false
+    },
+    "similarity+rerank": {
+      "hit_at_k": 0.7273,
+      "mrr": 0.4992,
+      "hits": 16,
+      "in_scope": 22,
+      "oos_refuse_rate": 1.0,
+      "oos_ok": 2,
+      "oos_n": 2,
+      "use_reranker": true
+    },
+    "mmr": {
+      "hit_at_k": 0.6818,
+      "mrr": 0.411,
+      "hits": 15,
+      "in_scope": 22,
+      "oos_refuse_rate": 0.0,
+      "oos_ok": 0,
+      "oos_n": 2,
+      "use_reranker": false
+    },
+    "mmr+rerank": {
+      "hit_at_k": 0.6818,
+      "mrr": 0.5341,
+      "hits": 15,
+      "in_scope": 22,
+      "oos_refuse_rate": 1.0,
+      "oos_ok": 2,
+      "oos_n": 2,
+      "use_reranker": true
     },
     "hybrid": {
       "hit_at_k": 0.7727,
+      "mrr": 0.4125,
       "hits": 17,
       "in_scope": 22,
       "oos_refuse_rate": 0.0,
       "oos_ok": 0,
-      "oos_n": 2
+      "oos_n": 2,
+      "use_reranker": false
+    },
+    "hybrid+rerank": {
+      "hit_at_k": 0.7727,
+      "mrr": 0.5242,
+      "hits": 17,
+      "in_scope": 22,
+      "oos_refuse_rate": 1.0,
+      "oos_ok": 2,
+      "oos_n": 2,
+      "use_reranker": true
     }
   },
   "detail": {
@@ -35,6 +81,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.5",
           "attention_is_all_you_need.pdf, p.6",
@@ -48,12 +95,13 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.3",
           "attention_is_all_you_need.pdf, p.3",
           "attention_is_all_you_need.pdf, p.5",
           "attention_is_all_you_need.pdf, p.6",
-          "rag_lewis_2020.pdf, p.11"
+          "attention_is_all_you_need.pdf, p.5"
         ]
       },
       {
@@ -61,12 +109,13 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.11",
           "attention_is_all_you_need.pdf, p.9",
           "attention_is_all_you_need.pdf, p.8",
-          "attention_is_all_you_need.pdf, p.1",
-          "attention_is_all_you_need.pdf, p.8"
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.2"
         ]
       },
       {
@@ -74,6 +123,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.4",
           "attention_is_all_you_need.pdf, p.4",
@@ -87,6 +137,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.3333,
         "pages": [
           "attention_is_all_you_need.pdf, p.2",
           "attention_is_all_you_need.pdf, p.2",
@@ -100,6 +151,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.11",
           "attention_is_all_you_need.pdf, p.2",
@@ -113,6 +165,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.8",
           "attention_is_all_you_need.pdf, p.10",
@@ -126,6 +179,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.11",
           "attention_is_all_you_need.pdf, p.8",
@@ -139,12 +193,13 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.10",
           "attention_is_all_you_need.pdf, p.9",
           "attention_is_all_you_need.pdf, p.10",
-          "attention_is_all_you_need.pdf, p.2",
-          "rag_lewis_2020.pdf, p.15"
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.2"
         ]
       },
       {
@@ -152,12 +207,13 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.9",
-          "rag_lewis_2020.pdf, p.11",
           "attention_is_all_you_need.pdf, p.5",
           "attention_is_all_you_need.pdf, p.6",
-          "attention_is_all_you_need.pdf, p.8"
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.3"
         ]
       },
       {
@@ -165,6 +221,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.7",
           "rag_lewis_2020.pdf, p.8",
@@ -178,6 +235,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.7",
           "rag_lewis_2020.pdf, p.13",
@@ -191,19 +249,21 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.8",
           "rag_lewis_2020.pdf, p.3",
+          "rag_lewis_2020.pdf, p.8",
           "rag_lewis_2020.pdf, p.17",
-          "rag_lewis_2020.pdf, p.5",
-          "rag_lewis_2020.pdf, p.4"
+          "rag_lewis_2020.pdf, p.5"
         ]
       },
       {
         "id": "rag-fixed-encoder",
-        "hit": false,
+        "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.1429,
         "pages": [
           "rag_lewis_2020.pdf, p.5",
           "rag_lewis_2020.pdf, p.17",
@@ -217,6 +277,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.2,
         "pages": [
           "rag_lewis_2020.pdf, p.8",
           "rag_lewis_2020.pdf, p.17",
@@ -230,19 +291,21 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.8",
-          "rag_lewis_2020.pdf, p.4",
           "rag_lewis_2020.pdf, p.6",
           "rag_lewis_2020.pdf, p.17",
-          "rag_lewis_2020.pdf, p.8"
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.2"
         ]
       },
       {
         "id": "rag-jeopardy",
-        "hit": false,
+        "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.125,
         "pages": [
           "rag_lewis_2020.pdf, p.4",
           "rag_lewis_2020.pdf, p.4",
@@ -256,6 +319,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.7",
           "rag_lewis_2020.pdf, p.10",
@@ -269,12 +333,13 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "rag_lewis_2020.pdf, p.19",
-          "rag_lewis_2020.pdf, p.4",
           "attention_is_all_you_need.pdf, p.7",
           "rag_lewis_2020.pdf, p.4",
-          "attention_is_all_you_need.pdf, p.9"
+          "attention_is_all_you_need.pdf, p.9",
+          "rag_lewis_2020.pdf, p.17"
         ]
       },
       {
@@ -282,6 +347,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.8",
           "rag_lewis_2020.pdf, p.8",
@@ -295,6 +361,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.2",
           "rag_lewis_2020.pdf, p.11",
@@ -308,6 +375,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.1429,
         "pages": [
           "rag_lewis_2020.pdf, p.5",
           "rag_lewis_2020.pdf, p.8",
@@ -320,13 +388,333 @@
         "id": "oos-paris",
         "hit": false,
         "out_of_scope": true,
-        "n_retrieved": 8
+        "n_retrieved": 8,
+        "rr": 0.0
       },
       {
         "id": "oos-aptosl",
         "hit": false,
         "out_of_scope": true,
-        "n_retrieved": 8
+        "n_retrieved": 8,
+        "rr": 0.0
+      }
+    ],
+    "similarity+rerank": [
+      {
+        "id": "att-authors",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.2,
+        "pages": [
+          "rag_lewis_2020.pdf, p.15",
+          "attention_is_all_you_need.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.6",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.1"
+        ]
+      },
+      {
+        "id": "att-encoder-n",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.6"
+        ]
+      },
+      {
+        "id": "att-dmodel",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.5"
+        ]
+      },
+      {
+        "id": "att-scaled-dot",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.1",
+          "attention_is_all_you_need.pdf, p.2"
+        ]
+      },
+      {
+        "id": "att-heads",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.3"
+        ]
+      },
+      {
+        "id": "att-positional",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.3"
+        ]
+      },
+      {
+        "id": "att-bleu-big",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.3333,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.1",
+          "attention_is_all_you_need.pdf, p.7",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.9"
+        ]
+      },
+      {
+        "id": "att-dropout",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.12"
+        ]
+      },
+      {
+        "id": "att-parsing-f1",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.8"
+        ]
+      },
+      {
+        "id": "att-feedforward",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.3333,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.6",
+          "attention_is_all_you_need.pdf, p.7"
+        ]
+      },
+      {
+        "id": "rag-title",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.8"
+        ]
+      },
+      {
+        "id": "rag-author",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 0,
+        "rr": 0.0,
+        "pages": []
+      },
+      {
+        "id": "rag-seq-token",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.2,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.17",
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.3"
+        ]
+      },
+      {
+        "id": "rag-fixed-encoder",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.1",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.3",
+          "rag_lewis_2020.pdf, p.11"
+        ]
+      },
+      {
+        "id": "rag-nq-score",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.3333,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6"
+        ]
+      },
+      {
+        "id": "rag-dpr-nq",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.25,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.3",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.4"
+        ]
+      },
+      {
+        "id": "rag-jeopardy",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.1",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.17",
+          "rag_lewis_2020.pdf, p.8"
+        ]
+      },
+      {
+        "id": "rag-impact",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.10",
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.8"
+        ]
+      },
+      {
+        "id": "rag-nq-train-size",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.19",
+          "rag_lewis_2020.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.10",
+          "rag_lewis_2020.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.9"
+        ]
+      },
+      {
+        "id": "rag-t5-vs-rag",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.4"
+        ]
+      },
+      {
+        "id": "cross-who-transformer",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.17",
+          "rag_lewis_2020.pdf, p.17",
+          "rag_lewis_2020.pdf, p.5"
+        ]
+      },
+      {
+        "id": "cross-realm",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.3333,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.17"
+        ]
+      },
+      {
+        "id": "oos-paris",
+        "hit": true,
+        "out_of_scope": true,
+        "n_retrieved": 0,
+        "rr": 1.0
+      },
+      {
+        "id": "oos-aptosl",
+        "hit": true,
+        "out_of_scope": true,
+        "n_retrieved": 0,
+        "rr": 1.0
       }
     ],
     "mmr": [
@@ -335,6 +723,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.5",
           "rag_lewis_2020.pdf, p.15",
@@ -348,6 +737,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.3",
           "rag_lewis_2020.pdf, p.11",
@@ -361,6 +751,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.11",
           "attention_is_all_you_need.pdf, p.9",
@@ -374,6 +765,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.4",
           "attention_is_all_you_need.pdf, p.13",
@@ -387,6 +779,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "attention_is_all_you_need.pdf, p.2",
           "attention_is_all_you_need.pdf, p.5",
@@ -400,6 +793,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.11",
           "attention_is_all_you_need.pdf, p.3",
@@ -413,6 +807,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.8",
           "rag_lewis_2020.pdf, p.11",
@@ -426,6 +821,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.11",
           "attention_is_all_you_need.pdf, p.8",
@@ -439,6 +835,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.10",
           "attention_is_all_you_need.pdf, p.9",
@@ -452,6 +849,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.9",
           "rag_lewis_2020.pdf, p.11",
@@ -465,6 +863,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.7",
           "rag_lewis_2020.pdf, p.8",
@@ -478,12 +877,13 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.7",
           "rag_lewis_2020.pdf, p.13",
-          "rag_lewis_2020.pdf, p.10",
           "rag_lewis_2020.pdf, p.16",
-          "attention_is_all_you_need.pdf, p.9"
+          "attention_is_all_you_need.pdf, p.9",
+          "rag_lewis_2020.pdf, p.6"
         ]
       },
       {
@@ -491,6 +891,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.8",
           "rag_lewis_2020.pdf, p.3",
@@ -504,6 +905,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.25,
         "pages": [
           "rag_lewis_2020.pdf, p.5",
           "rag_lewis_2020.pdf, p.17",
@@ -517,6 +919,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.2,
         "pages": [
           "rag_lewis_2020.pdf, p.8",
           "rag_lewis_2020.pdf, p.4",
@@ -530,6 +933,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.8",
           "rag_lewis_2020.pdf, p.4",
@@ -543,6 +947,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.25,
         "pages": [
           "rag_lewis_2020.pdf, p.4",
           "rag_lewis_2020.pdf, p.4",
@@ -556,6 +961,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.7",
           "rag_lewis_2020.pdf, p.10",
@@ -569,6 +975,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "rag_lewis_2020.pdf, p.19",
           "attention_is_all_you_need.pdf, p.7",
@@ -582,6 +989,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.8",
           "rag_lewis_2020.pdf, p.8",
@@ -595,6 +1003,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.1429,
         "pages": [
           "rag_lewis_2020.pdf, p.2",
           "rag_lewis_2020.pdf, p.11",
@@ -608,6 +1017,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.2,
         "pages": [
           "rag_lewis_2020.pdf, p.5",
           "rag_lewis_2020.pdf, p.7",
@@ -620,13 +1030,333 @@
         "id": "oos-paris",
         "hit": false,
         "out_of_scope": true,
-        "n_retrieved": 8
+        "n_retrieved": 8,
+        "rr": 0.0
       },
       {
         "id": "oos-aptosl",
         "hit": false,
         "out_of_scope": true,
-        "n_retrieved": 8
+        "n_retrieved": 8,
+        "rr": 0.0
+      }
+    ],
+    "mmr+rerank": [
+      {
+        "id": "att-authors",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.15",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.6",
+          "rag_lewis_2020.pdf, p.14"
+        ]
+      },
+      {
+        "id": "att-encoder-n",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.2"
+        ]
+      },
+      {
+        "id": "att-dmodel",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.9"
+        ]
+      },
+      {
+        "id": "att-scaled-dot",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.6",
+          "rag_lewis_2020.pdf, p.15"
+        ]
+      },
+      {
+        "id": "att-heads",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.5"
+        ]
+      },
+      {
+        "id": "att-positional",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.8",
+          "rag_lewis_2020.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.2"
+        ]
+      },
+      {
+        "id": "att-bleu-big",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.10"
+        ]
+      },
+      {
+        "id": "att-dropout",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.10",
+          "rag_lewis_2020.pdf, p.3",
+          "rag_lewis_2020.pdf, p.17"
+        ]
+      },
+      {
+        "id": "att-parsing-f1",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.5",
+          "rag_lewis_2020.pdf, p.17"
+        ]
+      },
+      {
+        "id": "att-feedforward",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.5,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.6",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.4"
+        ]
+      },
+      {
+        "id": "rag-title",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.8"
+        ]
+      },
+      {
+        "id": "rag-author",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 0,
+        "rr": 0.0,
+        "pages": []
+      },
+      {
+        "id": "rag-seq-token",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.25,
+        "pages": [
+          "rag_lewis_2020.pdf, p.17",
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.3",
+          "rag_lewis_2020.pdf, p.3"
+        ]
+      },
+      {
+        "id": "rag-fixed-encoder",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.11",
+          "rag_lewis_2020.pdf, p.8"
+        ]
+      },
+      {
+        "id": "rag-nq-score",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.25,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.17"
+        ]
+      },
+      {
+        "id": "rag-dpr-nq",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.25,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.3",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.4"
+        ]
+      },
+      {
+        "id": "rag-jeopardy",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.19"
+        ]
+      },
+      {
+        "id": "rag-impact",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.10",
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.8"
+        ]
+      },
+      {
+        "id": "rag-nq-train-size",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.19",
+          "attention_is_all_you_need.pdf, p.10",
+          "rag_lewis_2020.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.9",
+          "rag_lewis_2020.pdf, p.5"
+        ]
+      },
+      {
+        "id": "rag-t5-vs-rag",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.8"
+        ]
+      },
+      {
+        "id": "cross-who-transformer",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.17",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.7"
+        ]
+      },
+      {
+        "id": "cross-realm",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.5,
+        "pages": [
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.7"
+        ]
+      },
+      {
+        "id": "oos-paris",
+        "hit": true,
+        "out_of_scope": true,
+        "n_retrieved": 0,
+        "rr": 1.0
+      },
+      {
+        "id": "oos-aptosl",
+        "hit": true,
+        "out_of_scope": true,
+        "n_retrieved": 0,
+        "rr": 1.0
       }
     ],
     "hybrid": [
@@ -635,6 +1365,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.3333,
         "pages": [
           "attention_is_all_you_need.pdf, p.2",
           "attention_is_all_you_need.pdf, p.5",
@@ -648,6 +1379,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.3",
           "rag_lewis_2020.pdf, p.2",
@@ -661,6 +1393,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.125,
         "pages": [
           "attention_is_all_you_need.pdf, p.2",
           "attention_is_all_you_need.pdf, p.2",
@@ -674,6 +1407,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.4",
           "attention_is_all_you_need.pdf, p.7",
@@ -687,6 +1421,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "attention_is_all_you_need.pdf, p.2",
           "attention_is_all_you_need.pdf, p.5",
@@ -700,6 +1435,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.2",
           "attention_is_all_you_need.pdf, p.2",
@@ -713,6 +1449,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.125,
         "pages": [
           "attention_is_all_you_need.pdf, p.10",
           "attention_is_all_you_need.pdf, p.1",
@@ -726,6 +1463,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.9",
           "attention_is_all_you_need.pdf, p.2",
@@ -739,6 +1477,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "attention_is_all_you_need.pdf, p.10",
           "attention_is_all_you_need.pdf, p.2",
@@ -752,6 +1491,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.25,
         "pages": [
           "attention_is_all_you_need.pdf, p.5",
           "attention_is_all_you_need.pdf, p.10",
@@ -765,6 +1505,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.2,
         "pages": [
           "rag_lewis_2020.pdf, p.2",
           "rag_lewis_2020.pdf, p.4",
@@ -778,6 +1519,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.125,
         "pages": [
           "attention_is_all_you_need.pdf, p.5",
           "rag_lewis_2020.pdf, p.5",
@@ -791,6 +1533,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.25,
         "pages": [
           "rag_lewis_2020.pdf, p.17",
           "rag_lewis_2020.pdf, p.4",
@@ -804,6 +1547,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "rag_lewis_2020.pdf, p.4",
           "attention_is_all_you_need.pdf, p.9",
@@ -817,6 +1561,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.1667,
         "pages": [
           "rag_lewis_2020.pdf, p.17",
           "rag_lewis_2020.pdf, p.4",
@@ -830,6 +1575,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.5",
           "rag_lewis_2020.pdf, p.6",
@@ -843,6 +1589,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "rag_lewis_2020.pdf, p.5",
           "rag_lewis_2020.pdf, p.2",
@@ -856,6 +1603,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 1.0,
         "pages": [
           "rag_lewis_2020.pdf, p.10",
           "rag_lewis_2020.pdf, p.5",
@@ -869,6 +1617,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.6",
           "attention_is_all_you_need.pdf, p.10",
@@ -882,6 +1631,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.5",
           "rag_lewis_2020.pdf, p.5",
@@ -895,6 +1645,7 @@
         "hit": false,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.0,
         "pages": [
           "rag_lewis_2020.pdf, p.6",
           "rag_lewis_2020.pdf, p.2",
@@ -908,6 +1659,7 @@
         "hit": true,
         "out_of_scope": false,
         "n_retrieved": 8,
+        "rr": 0.5,
         "pages": [
           "rag_lewis_2020.pdf, p.2",
           "rag_lewis_2020.pdf, p.6",
@@ -920,14 +1672,341 @@
         "id": "oos-paris",
         "hit": false,
         "out_of_scope": true,
-        "n_retrieved": 8
+        "n_retrieved": 8,
+        "rr": 0.0
       },
       {
         "id": "oos-aptosl",
         "hit": false,
         "out_of_scope": true,
-        "n_retrieved": 8
+        "n_retrieved": 8,
+        "rr": 0.0
+      }
+    ],
+    "hybrid+rerank": [
+      {
+        "id": "att-authors",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.1",
+          "attention_is_all_you_need.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.2"
+        ]
+      },
+      {
+        "id": "att-encoder-n",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.6",
+          "attention_is_all_you_need.pdf, p.2"
+        ]
+      },
+      {
+        "id": "att-dmodel",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.2,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.3"
+        ]
+      },
+      {
+        "id": "att-scaled-dot",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.1"
+        ]
+      },
+      {
+        "id": "att-heads",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.4",
+          "attention_is_all_you_need.pdf, p.2",
+          "attention_is_all_you_need.pdf, p.3"
+        ]
+      },
+      {
+        "id": "att-positional",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.2",
+          "rag_lewis_2020.pdf, p.2"
+        ]
+      },
+      {
+        "id": "att-bleu-big",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.5,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.1",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.7",
+          "attention_is_all_you_need.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.9"
+        ]
+      },
+      {
+        "id": "att-dropout",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.9",
+          "rag_lewis_2020.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.2"
+        ]
+      },
+      {
+        "id": "att-parsing-f1",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.6"
+        ]
+      },
+      {
+        "id": "att-feedforward",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.5,
+        "pages": [
+          "attention_is_all_you_need.pdf, p.5",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.7",
+          "attention_is_all_you_need.pdf, p.10",
+          "attention_is_all_you_need.pdf, p.10"
+        ]
+      },
+      {
+        "id": "rag-title",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.3333,
+        "pages": [
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.1",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.8"
+        ]
+      },
+      {
+        "id": "rag-author",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.1",
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.13",
+          "attention_is_all_you_need.pdf, p.9",
+          "attention_is_all_you_need.pdf, p.10"
+        ]
+      },
+      {
+        "id": "rag-seq-token",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.1667,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.17",
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.6"
+        ]
+      },
+      {
+        "id": "rag-fixed-encoder",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.1",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.17"
+        ]
+      },
+      {
+        "id": "rag-nq-score",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.25,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.17"
+        ]
+      },
+      {
+        "id": "rag-dpr-nq",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.25,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.3",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.17"
+        ]
+      },
+      {
+        "id": "rag-jeopardy",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.1",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.17"
+        ]
+      },
+      {
+        "id": "rag-impact",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 1.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.10",
+          "rag_lewis_2020.pdf, p.7",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6"
+        ]
+      },
+      {
+        "id": "rag-nq-train-size",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.3",
+          "attention_is_all_you_need.pdf, p.10",
+          "rag_lewis_2020.pdf, p.8",
+          "attention_is_all_you_need.pdf, p.9",
+          "rag_lewis_2020.pdf, p.5"
+        ]
+      },
+      {
+        "id": "rag-t5-vs-rag",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.8",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.4",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.5"
+        ]
+      },
+      {
+        "id": "cross-who-transformer",
+        "hit": false,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.0,
+        "pages": [
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.1",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.6"
+        ]
+      },
+      {
+        "id": "cross-realm",
+        "hit": true,
+        "out_of_scope": false,
+        "n_retrieved": 8,
+        "rr": 0.3333,
+        "pages": [
+          "rag_lewis_2020.pdf, p.5",
+          "rag_lewis_2020.pdf, p.1",
+          "rag_lewis_2020.pdf, p.6",
+          "rag_lewis_2020.pdf, p.2",
+          "rag_lewis_2020.pdf, p.6"
+        ]
+      },
+      {
+        "id": "oos-paris",
+        "hit": true,
+        "out_of_scope": true,
+        "n_retrieved": 0,
+        "rr": 1.0
+      },
+      {
+        "id": "oos-aptosl",
+        "hit": true,
+        "out_of_scope": true,
+        "n_retrieved": 0,
+        "rr": 1.0
       }
     ]
-  }
+  },
+  "ce_min_score": -9.0
 }
